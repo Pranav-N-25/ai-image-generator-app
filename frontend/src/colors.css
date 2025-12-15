@@ -1,0 +1,85 @@
+* {
+    --color-bluepink-1: #2d00f7;
+    --color-bluepink-2: #6a00f4;
+    --color-bluepink-3: #8900f2;
+    --color-bluepink-4: #a100f2;
+    --color-bluepink-5: #b100e8;
+    --color-bluepink-6: #bc00dd;
+    --color-bluepink-7: #d100d1;
+    --color-bluepink-8: #db00b6;
+    --color-bluepink-9: #e500a4;
+    --color-bluepink-10: #f20089;
+}
+div {
+    color: #641220ff;
+    color: #6e1423ff;
+    color: #85182aff;
+    color: #a11d33ff;
+    color: #a71e34ff;
+    color: #b21e35ff;
+    color: #bd1f36ff;
+    color: #c71f37ff;
+    color: #da1e37;
+    color: #ff7a8b63;
+}
+
+/* Tailwind CSS custom color example */
+@layer utilities {
+    .text-reddish {
+        color: var(--color-reddish);
+    }
+
+    .bg-reddish {
+        background-color: var(--color-reddish);
+    }
+}
+    {
+    'tangelo': {
+        DEFAULT: '#ff4800', 100: '#330e00', 200: '#661d00', 300: '#992b00', 400: '#cc3a00', 500: '#ff4800', 600: '#ff6d33', 700: '#ff9166', 800: '#ffb699', 900: '#ffdacc'
+    }
+
+    ,
+    'orange_(pantone)': {
+        DEFAULT: '#ff5400', 100: '#331100', 200: '#662200', 300: '#993300', 400: '#cc4400', 500: '#ff5400', 600: '#ff7733', 700: '#ff9966', 800: '#ffbb99', 900: '#ffddcc'
+    }
+
+    ,
+    'orange_(pantone)': {
+        DEFAULT: '#ff6000', 100: '#331400', 200: '#662700', 300: '#993b00', 400: '#cc4e00', 500: '#ff6000', 600: '#ff8133', 700: '#ffa166', 800: '#ffc099', 900: '#ffe0cc'
+    }
+
+    ,
+    'pumpkin': {
+        DEFAULT: '#ff6d00', 100: '#331600', 200: '#662c00', 300: '#994200', 400: '#cc5800', 500: '#ff6d00', 600: '#ff8b33', 700: '#ffa866', 800: '#ffc599', 900: '#ffe2cc'
+    }
+
+    ,
+    'safety_orange': {
+        DEFAULT: '#ff7900', 100: '#331800', 200: '#663000', 300: '#994700', 400: '#cc5f00', 500: '#ff7900', 600: '#ff9233', 700: '#ffad66', 800: '#ffc999', 900: '#ffe4cc'
+    }
+
+    ,
+    'ut_orange': {
+        DEFAULT: '#ff8500', 100: '#331a00', 200: '#663500', 300: '#994f00', 400: '#cc6900', 500: '#ff8500', 600: '#ff9c33', 700: '#ffb566', 800: '#ffce99', 900: '#ffe6cc'
+    }
+
+    ,
+    'princeton_orange': {
+        DEFAULT: '#ff9100', 100: '#331d00', 200: '#663a00', 300: '#995700', 400: '#cc7400', 500: '#ff9100', 600: '#ffa733', 700: '#ffbd66', 800: '#ffd399', 900: '#ffe9cc'
+    }
+
+    ,
+    'orange_peel': {
+        DEFAULT: '#ff9e00', 100: '#331f00', 200: '#663f00', 300: '#995e00', 400: '#cc7e00', 500: '#ff9e00', 600: '#ffb133', 700: '#ffc466', 800: '#ffd899', 900: '#ffebcc'
+    }
+
+    ,
+    'orange_(web)': {
+        DEFAULT: '#ffaa00', 100: '#332200', 200: '#664400', 300: '#996600', 400: '#cc8800', 500: '#ffaa00', 600: '#ffbb33', 700: '#ffcc66', 800: '#ffdd99', 900: '#ffeecc'
+    }
+
+    ,
+    'selective_yellow': {
+        DEFAULT: '#ffb600', 100: '#332500', 200: '#664900', 300: '#996e00', 400: '#cc9200', 500: '#ffb600', 600: '#ffc533', 700: '#ffd466', 800: '#ffe299', 900: '#fff1cc'
+    }
+}

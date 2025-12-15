@@ -1,1 +1,94 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+@theme {
+  --color-bluepink-1: #2d00f7;
+  --color-bluepink-2: #6a00f4;
+  --color-bluepink-3: #8900f2;
+  --color-bluepink-4: #a100f2;
+  --color-bluepink-5: #b100e8;
+  --color-bluepink-6: #bc00dd;
+  --color-bluepink-7: #d100d1;
+  --color-bluepink-8: #db00b6;
+  --color-bluepink-9: #e500a4;
+  --color-bluepink-10: #f20089;
+
+  --color-vibrant-1: #ff595e; /* Watermelon Red */
+  --color-vibrant-2: #ff924c; /* Mango Orange */
+  --color-vibrant-3: #ffca3a; /* Lemon Yellow */
+  --color-vibrant-4: #8ac926; /* Lime Green */
+  --color-vibrant-5: #1982c4; /* Sky Blue */
+  --color-vibrant-6: #6a4c93; /* Violet Purple */
+  --color-vibrant-7: #d81159; /* Raspberry Pink */
+  --color-vibrant-8: #f72585; /* Fuchsia Glow */
+  --color-vibrant-9: #7209b7; /* Deep Indigo */
+  --color-vibrant-10: #3a0ca3; /* Royal Blue */
+
+  --color-primary: #1e40af; /* Indigo (Primary Action) */
+  --color-secondary: #9333ea; /* Purple (Secondary Accent) */
+  --color-accent: #f59e0b; /* Amber (Highlight) */
+  --color-success: #10b981; /* Emerald (Success State) */
+  --color-warning: #f97316; /* Orange (Warning State) */
+  --color-error: #ef4444; /* Red (Error State) */
+  --color-info: #0ea5e9; /* Sky Blue (Info State) */
+  --color-muted: #64748b; /* Slate (Muted Text) */
+  --color-surface: #f3f4f6; /* Light Gray (Background) */
+
+  --color-flat-1: #e63946; /* Coral Red */
+  --color-flat-2: #f1faee; /* Soft White */
+  --color-flat-3: #a8dadc; /* Pale Aqua */
+  --color-flat-4: #457b9d; /* Steel Blue */
+  --color-flat-5: #1d3557; /* Deep Navy */
+
+  --color-earthy-1: #606c38; /* Olive Green */
+  --color-earthy-2: #283618; /* Forest Brown */
+  --color-earthy-3: #fefae0; /* Sand Beige */
+  --color-earthy-4: #dda15e; /* Warm Ochre */
+  --color-earthy-5: #bc6c25; /* Rustic Orange */
+}
+
+.p {
+  color: #adadad;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.ai-aurora {
+  /* width: 300px;
+  height: 300px; */
+  /* border-radius: 20px; */
+  background: radial-gradient(circle at top left, #fbff00, #ff0000);
+    /* background: radial-gradient(circle at top left, #00ffe0, #8a00ff); */
+  /* box-shadow: 0 0 30px rgba(251, 255,3), 0 0 80px rgba(255, 0, 3), 0 0 880px rgb(255, 0, 242); */
+  animation: auroraGlow 6s ease-in-out infinite;
+  transition: transform 0.3s ease;
+}
+
+
+/* .ai-aurora:hover {
+  transform: scale(1.05);
+} */
+
+@keyframes auroraGlow {
+  0%, 100% {
+    filter: hue-rotate(0deg);
+    /* rotate: 5deg; */
+  }
+  25% {
+    filter: hue-rotate(-80deg);
+    /* rotate: -5deg; */
+  }
+  75% {
+    filter: hue-rotate(-100deg);
+    /* rotate: -5deg; */
+  }
+  50% {
+    filter: hue-rotate(-130deg);
+    /* rotate: 5deg; */
+  }
+}

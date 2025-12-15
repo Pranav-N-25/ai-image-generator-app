@@ -1,19 +1,15 @@
 import React from "react";
 import { useMediaQuery } from "react-responsive";
 import { createContext, useContext } from "react";
-import { useUser, useAuth } from "@clerk/clerk-react";
+import { useUser, useAuth} from "@clerk/clerk-react";
 
-// Create a context for the application
-// eslint-disable-next-line react-refresh/only-export-components
 export const AppContext = createContext();
 
-// Custom hook to use the AppContext
-// eslint-disable-next-line react-refresh/only-export-components
 export const useAppContext = () => {  // for providing
   return useContext(AppContext);
 };
 
-// AppContextProvider component to provide the context to its children
+
 export const AppContextProvider = ({ children }) => { //for wrapping the app
   const { user, isSignedIn } = useUser();
   const [chat, setChats] = React.useState([]);

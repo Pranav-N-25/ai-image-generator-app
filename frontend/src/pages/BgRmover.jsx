@@ -2,7 +2,7 @@ import React from 'react'
 
 const BgRmover = () => {
   return (
-    <div>BgRmover</div>
+    <div></div>
   )
 }
 

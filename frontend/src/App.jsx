@@ -4,22 +4,21 @@ import Button from "./components/Button";
 import { Routes, Route } from "react-router-dom";
 import { Pages } from "./pages/Index";
 import NavBar from "./components/NavBar";
+import Footer from "./components/Footer";
+// import { AIImageGeneratedURL, MyImageGenerator } from "./pages/ImgGenerator";
 const App = () => {
-
   return (
     <>
-    <NavBar />
+      <NavBar navStyle={2} />
       <Routes>
-        <Route path="/" element={Pages.Home} />
-        <Route path="/intro" element={Pages.Intro} />
-        <Route path="*" element={Pages.Home} />
-        <Route path="/ai" element={Pages.DashBoard}>
-          <Route path="chat-bot" element={Pages.ChatBot} />
-          <Route path="img-generator" element={Pages.ImgGenerator} />
-          <Route path="code-generator" element={Pages.CodeGenerator} />
-          <Route path="summarizer" element={Pages.Summerizer} />
-        </Route>
+        <Route exact path="/" element={Pages.Home} />
+        <Route path="*" element={Pages.NotFoundPage} />
+        <Route path="/chatbot" element={Pages.ChatBot} />
+        <Route path="/imagegen" element={Pages.ImgGenerator} />
+        <Route path="/codegen" element={Pages.CodeGenerator} />
+        <Route path="/summarizer" element={Pages.Summerizer} />
       </Routes>
+      <Footer />
     </>
   );
 };

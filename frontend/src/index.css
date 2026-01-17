@@ -1,5 +1,12 @@
 @import "tailwindcss";
+
 @custom-variant dark (&:where(.dark, .dark *));
+
+
+@layer components {
+  .navbar{ @apply relative z-40 ml-8 mx-1.5  text-gray-500/55 cursor-default font-bold duration-300 hover:bg-gradient-to-r  hover:from-red-400 hover:to-yellow-300 hover:text-white px-6 py-2.5 rounded-4xl }
+}
+
 @theme {
   --color-bluepink-1: #2d00f7;
   --color-bluepink-2: #6a00f4;
@@ -12,38 +19,67 @@
   --color-bluepink-9: #e500a4;
   --color-bluepink-10: #f20089;
 
-  --color-vibrant-1: #ff595e; /* Watermelon Red */
-  --color-vibrant-2: #ff924c; /* Mango Orange */
-  --color-vibrant-3: #ffca3a; /* Lemon Yellow */
-  --color-vibrant-4: #8ac926; /* Lime Green */
-  --color-vibrant-5: #1982c4; /* Sky Blue */
-  --color-vibrant-6: #6a4c93; /* Violet Purple */
-  --color-vibrant-7: #d81159; /* Raspberry Pink */
-  --color-vibrant-8: #f72585; /* Fuchsia Glow */
-  --color-vibrant-9: #7209b7; /* Deep Indigo */
-  --color-vibrant-10: #3a0ca3; /* Royal Blue */
+  --color-vibrant-1: #ff595e;
+  /* Watermelon Red */
+  --color-vibrant-2: #ff924c;
+  /* Mango Orange */
+  --color-vibrant-3: #ffca3a;
+  /* Lemon Yellow */
+  --color-vibrant-4: #8ac926;
+  /* Lime Green */
+  --color-vibrant-5: #1982c4;
+  /* Sky Blue */
+  --color-vibrant-6: #6a4c93;
+  /* Violet Purple */
+  --color-vibrant-7: #d81159;
+  /* Raspberry Pink */
+  --color-vibrant-8: #f72585;
+  /* Fuchsia Glow */
+  --color-vibrant-9: #7209b7;
+  /* Deep Indigo */
+  --color-vibrant-10: #3a0ca3;
+  /* Royal Blue */
 
-  --color-primary: #1e40af; /* Indigo (Primary Action) */
-  --color-secondary: #9333ea; /* Purple (Secondary Accent) */
-  --color-accent: #f59e0b; /* Amber (Highlight) */
-  --color-success: #10b981; /* Emerald (Success State) */
-  --color-warning: #f97316; /* Orange (Warning State) */
-  --color-error: #ef4444; /* Red (Error State) */
-  --color-info: #0ea5e9; /* Sky Blue (Info State) */
-  --color-muted: #64748b; /* Slate (Muted Text) */
-  --color-surface: #f3f4f6; /* Light Gray (Background) */
+  --color-primary: #1e40af;
+  /* Indigo (Primary Action) */
+  --color-secondary: #9333ea;
+  /* Purple (Secondary Accent) */
+  --color-accent: #f59e0b;
+  /* Amber (Highlight) */
+  --color-success: #10b981;
+  /* Emerald (Success State) */
+  --color-warning: #f97316;
+  /* Orange (Warning State) */
+  --color-error: #ef4444;
+  /* Red (Error State) */
+  --color-info: #0ea5e9;
+  /* Sky Blue (Info State) */
+  --color-muted: #64748b;
+  /* Slate (Muted Text) */
+  --color-surface: #f3f4f6;
+  /* Light Gray (Background) */
 
-  --color-flat-1: #e63946; /* Coral Red */
-  --color-flat-2: #f1faee; /* Soft White */
-  --color-flat-3: #a8dadc; /* Pale Aqua */
-  --color-flat-4: #457b9d; /* Steel Blue */
-  --color-flat-5: #1d3557; /* Deep Navy */
+  --color-flat-1: #e63946;
+  /* Coral Red */
+  --color-flat-2: #f1faee;
+  /* Soft White */
+  --color-flat-3: #a8dadc;
+  /* Pale Aqua */
+  --color-flat-4: #457b9d;
+  /* Steel Blue */
+  --color-flat-5: #1d3557;
+  /* Deep Navy */
 
-  --color-earthy-1: #606c38; /* Olive Green */
-  --color-earthy-2: #283618; /* Forest Brown */
-  --color-earthy-3: #fefae0; /* Sand Beige */
-  --color-earthy-4: #dda15e; /* Warm Ochre */
-  --color-earthy-5: #bc6c25; /* Rustic Orange */
+  --color-earthy-1: #606c38;
+  /* Olive Green */
+  --color-earthy-2: #283618;
+  /* Forest Brown */
+  --color-earthy-3: #fefae0;
+  /* Sand Beige */
+  --color-earthy-4: #dda15e;
+  /* Warm Ochre */
+  --color-earthy-5: #bc6c25;
+  /* Rustic Orange */
 }
 
 .p {
@@ -55,7 +91,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .ai-aurora {
@@ -63,7 +99,7 @@ body {
   height: 300px; */
   /* border-radius: 20px; */
   background: radial-gradient(circle at top left, #fbff00, #ff0000);
-    /* background: radial-gradient(circle at top left, #00ffe0, #8a00ff); */
+  /* background: radial-gradient(circle at top left, #00ffe0, #8a00ff); */
   /* box-shadow: 0 0 30px rgba(251, 255,3), 0 0 80px rgba(255, 0, 3), 0 0 880px rgb(255, 0, 242); */
   animation: auroraGlow 6s ease-in-out infinite;
   transition: transform 0.3s ease;
@@ -75,20 +111,76 @@ body {
 } */
 
 @keyframes auroraGlow {
-  0%, 100% {
+
+  0%,
+  100% {
     filter: hue-rotate(0deg);
     /* rotate: 5deg; */
   }
+
   25% {
     filter: hue-rotate(-80deg);
     /* rotate: -5deg; */
   }
+
   75% {
     filter: hue-rotate(-100deg);
     /* rotate: -5deg; */
   }
+
   50% {
     filter: hue-rotate(-130deg);
     /* rotate: 5deg; */
   }
+}
+
+
+/* 1. The container for positioning */
+.spinning-border-box {
+  position: relative; /* Needed for absolute positioning of ::before */
+  background: #fff; /* Inner background color */
+  border-radius: 10px; /* Match the border radius for smooth corners */
+  overflow: hidden; /* Keeps the spinning part within the bounds */
+  text-align: center;
+  z-index: 50; /* Ensure content is above the pseudo-element */
+}
+
+/* 2. The spinning effect using a pseudo-element */
+.spinning-border-box::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  /* Conic gradient creates a colored "slice" effect */
+  background: conic-gradient(
+    #ff0000, /* Red */
+    #ffff00, /* Yellow */
+    #00ff00, /* Green */
+    #00ffff, /* Cyan */
+    #0000ff, /* Blue */
+    #ff00ff, /* Magenta */
+    #ff0000  /* Back to Red */
+  );
+  border-radius: 15px; /* Slightly larger than the main box for border effect */
+  z-index: 0; /* Place it behind the main content */
+  animation: spin 3s linear infinite; /* Apply the animation */
+}
+
+/* 3. Define the animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.c{
+  margin: 0px !important ;
+  padding: 0px !important ;
+  height: 100% !important;
+  width :100% !important;
 }

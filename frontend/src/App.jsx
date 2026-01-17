@@ -9,7 +9,7 @@ import Footer from "./components/Footer";
 const App = () => {
   return (
     <>
-      <NavBar navStyle={2} />
+      <NavBar navStyle={2}/>
       <Routes>
         <Route exact path="/" element={Pages.Home} />
         <Route path="*" element={Pages.NotFoundPage} />

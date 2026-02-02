@@ -22,6 +22,7 @@
   "homepage": "https://github.com/Pranav-N-25/ai-image-generator-app#readme",
   "dependencies": {
     "@clerk/clerk-react": "^5.46.0",
+    "@fontsource/poppins": "^5.2.7",
     "@uiw/react-color": "^2.9.2",
     "framer-motion": "^12.23.26",
     "lucide-react": "^0.562.0",

@@ -1,3 +1,111 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight } from 'lucide-react'; // Standard 2026 icon set
+import homeNavBar from '../components/homeNavBar';
+import { useMediaQuery } from "react-responsive";
+import { FaArrowCircleLeft, FaArrowCircleRight } from "react-icons/fa";
+import { carouselSlides } from '../assets';
+const slides = [
+  { id: 1, title: "Neural Synthesis", desc: "4x faster processing.", color: "from-indigo-600" },
+  { id: 2, title: "Predictive Logic", desc: "Adaptive learning models.", color: "from-purple-600" },
+  { id: 3, title: "Global Scale", desc: "Sub-50ms latency.", color: "from-blue-600" },
+];
+
+export function Home() {
+
+  const carouselRef = useRef(null);
+  const { slide1, slide2, slide3, slide4, slide5, slide6, _slide1, _slide2, _slide3, _slide4, _slide5, _slide6 } = carouselSlides;
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (carouselRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
+        console.log("Scrollleft :" + scrollLeft + "\n scrollwidth :" + scrollWidth + "\n clientWidth : " + clientWidth)
+        // Check if we are at the end; if so, scroll back to the start
+        if (scrollLeft + clientWidth > scrollWidth - 50) {
+          carouselRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          // Scroll by the width of one visible container
+          carouselRef.current.scrollBy({ left: clientWidth, behavior: 'smooth' });
+          setButtonRef(1);
+        }
+        // setButtonRef();
+      }
+    }, 8532); // Adjust scroll speed here
+
+    return () => clearInterval(interval);
+  }, []);
+
+
+
+  const isMobile = useMediaQuery({ maxWidth: 597 });
+  const [buttonRef, setButtonRef] = useState(1);
+
+  const scroll = (offset) => {
+    carouselRef.current.scrollBy({ left: offset });
+  }
+
+  const [active, setActive] = useState(0);
+
+  // Sync markers when scrolling snaps
+  const onScroll = () => {
+    const el = carouselRef.current;
+    const index = Math.round(el.scrollLeft / el.offsetWidth);
+    setActive(index);
+
+  };
+
+  return (
+    <div className="w-full flex  justify-center relative h-[90%] md:h-[86%] my-1 py-auto flex-col /h-[87.2vh] items-center /backdrop-blur-3xl  ">
+      <div ref={carouselRef} onScroll={onScroll} className=" snap-container  carousel w-[99%] flex gap-4 h-full overflow-x-scroll scroll-smooth overflow-y-visible snap-x snap-mandatory rounded-4xl">
+        {buttonRef == 1 &&
+          <>
+
+            <motion.div
+              className={`absolute w-13 h-13 top-[48%] left-[1.5%] p-0 m-0 z-10 `}
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: .3 }}
+            >
+              <FaArrowCircleLeft className={`w-12 h-12 text-white/85 bg-white/55 p-0.5 rounded-4xl`} onClick={() => { scroll(-1000); console.log("buttonRef :" + buttonRef); setButtonRef(0); setTimeout(() => { setButtonRef(1); console.log("buttonRef :" + buttonRef) }, 500); }} />
+            </motion.div>
+
+            <motion.div
+              className={`absolute p-0 m-0 w-13 h-13 top-[48%] right-[1%] left-none  z-10 `}
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: .3 }}
+            >
+              <FaArrowCircleRight className={`w-12 h-12 text-white/85 bg-white/55 p-0.5 rounded-4xl`} onClick={() => { scroll(1000); console.log("buttonRef :" + buttonRef); setButtonRef(0); setTimeout(() => { setButtonRef(1); console.log("buttonRef : " + buttonRef) }, 500); }} />
+            </motion.div></>
+        }
+
+        <motion.img src={isMobile ? _slide1 : slide1} initial={{ opacity: 0.8, scale: isMobile ? 0.8 : buttonRef == 1 ? 0.6 : .3, y: 0, x: 0 }} whileInView={{ opacity: 2, scale: 1, y: 0, x: 0 }} viewport={{ once: false }} transition={{ duration: isMobile ? .5 : buttonRef == 1 ? .3 : .5, visualDuration: isMobile ? 0.2 : 0.15 }} className={`carousel-item snap-center snap-item h-full md:h-[101%] shrink-0 w-full md:w-full lg:w-[101%] /bg-blue-500 rounded-4xl`} />
+        <motion.img src={isMobile ? _slide2 : slide2} initial={{ opacity: 0.8, scale: isMobile ? 0.8 : buttonRef == 1 ? 0.6 : .3, y: 0, x: 0 }} whileInView={{ opacity: 2, scale: 1, y: 0, x: 0 }} viewport={{ once: false }} transition={{ duration: isMobile ? .5 : buttonRef == 1 ? .3 : .5, visualDuration: isMobile ? 0.2 : 0.15 }} className={`carousel-item snap-center snap-item h-full md:h-[101%] shrink-0 w-full md:w-full lg:w-[101%] /bg-red-500 rounded-4xl`} />
+        <motion.img src={isMobile ? _slide3 : slide3} initial={{ opacity: 0.8, scale: isMobile ? 0.8 : buttonRef == 1 ? 0.6 : .3, y: 0, x: 0 }} whileInView={{ opacity: 2, scale: 1, y: 0, x: 0 }} viewport={{ once: false }} transition={{ duration: isMobile ? .5 : buttonRef == 1 ? .3 : .5, visualDuration: isMobile ? 0.2 : 0.15 }} className={`carousel-item snap-center snap-item h-full md:h-[101%] shrink-0 w-full md:w-full lg:w-[101%] /bg-green-500 rounded-4xl`} />
+        <motion.img src={isMobile ? _slide4 : slide4} initial={{ opacity: 0.8, scale: isMobile ? 0.8 : buttonRef == 1 ? 0.6 : .3, y: 0, x: 0 }} whileInView={{ opacity: 2, scale: 1, y: 0, x: 0 }} viewport={{ once: false }} transition={{ duration: isMobile ? .5 : buttonRef == 1 ? .3 : .5, visualDuration: isMobile ? 0.2 : 0.15 }} className={`carousel-item snap-center snap-item h-full md:h-[101%] shrink-0 w-full md:w-full lg:w-[101%] /bg-yellow-500 rounded-4xl`} />
+        <motion.img src={isMobile ? _slide5 : slide5} initial={{ opacity: 0.8, scale: isMobile ? 0.8 : buttonRef == 1 ? 0.6 : .3, y: 0, x: 0 }} whileInView={{ opacity: 2, scale: 1, y: 0, x: 0 }} viewport={{ once: false }} transition={{ duration: isMobile ? .5 : buttonRef == 1 ? .3 : .5, visualDuration: isMobile ? 0.2 : 0.15 }} className={`carousel-item snap-center snap-item h-full md:h-[101%] shrink-0 w-full md:w-full lg:w-[101%] /bg-vibrant-1 rounded-4xl`} />
+        <motion.img src={isMobile ? _slide6 : slide6} initial={{ opacity: 0.8, scale: isMobile ? 0.8 : buttonRef == 1 ? 0.6 : .3, y: 0, x: 0 }} whileInView={{ opacity: 2, scale: 1, y: 0, x: 0 }} viewport={{ once: false }} transition={{ duration: isMobile ? .5 : buttonRef == 1 ? .3 : .5, visualDuration: isMobile ? 0.2 : 0.15 }} className={`carousel-item snap-center snap-item h-full md:h-[101%] shrink-0 w-full md:w-full lg:w-[101%] /bg-vibrant-7 rounded-4xl`} />
+
+      </div>
+
+      <div className="flex absolute bottom-5 justify-center gap-2 mt-4">
+        {[1, 2, 3, 4, 5, 6].map((_, i) => (
+          <button
+            key={i}
+            onClick={() => carouselRef.current.scrollTo({ left: i * carouselRef.current.offsetWidth })}
+            className={`h-2 rounded-full transition-all shadow-2xl shadow-black ${active === i ? "w-6 bg-white" : "w-2 bg-white/44"}`}
+          />
+        ))}
+      </div>
+    </div>
+
+  );
+}
+
+
+
+
+// Home
 // import React from 'react'
 // export const Home = () => {
 //   return (
@@ -65,73 +173,3 @@
 //   )
 // }
 
-
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react'; // Standard 2026 icon set
-import homeNavBar from '../components/homeNavBar';
-const slides = [
-  { id: 1, title: "Neural Synthesis", desc: "4x faster processing.", color: "from-indigo-600" },
-  { id: 2, title: "Predictive Logic", desc: "Adaptive learning models.", color: "from-purple-600" },
-  { id: 3, title: "Global Scale", desc: "Sub-50ms latency.", color: "from-blue-600" },
-];
-
-export function Home() {
-  const [index, setIndex] = useState(0);
-  const [position, setPosition] = useState("l");
-  const Left = { x: -300, opacity: 0 };
-  const Right = { x: 300, opacity: 0 };
-  const nextSlide = () => setIndex((prev) => (prev + 1) % slides.length);
-  console.log((index+1)%slides.length)
-  const prevSlide = () => setIndex((prev) => (prev - 1 + slides.length) % slides.length);
-
-  return (
-    <div className="relative w-full mx-auto h-screen md:h-[88vh] md:w-full overflow-hidden rounded-3xl bg-black border border-white/10 shadow-2xl">
-      
-      {/* Slide Content */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={index}
-          initial={position === "r" ? Right : Left}
-          animate={{ x: 0, opacity: 1 }}
-          exit={position === "r" ? Left : Right}
-          transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className={`absolute inset-0 flex flex-col items-center justify-center p-12 text-center bg-gradient-to-br ${slides[index].color} to-black`}
-        >
-          <h2 className="text-white text-5xl font-black mb-4 tracking-tighter">
-            {slides[index].title}
-          </h2>
-          <p className="text-gray-300 text-lg max-w-md">
-            {slides[index].desc}
-          </p>
-        </motion.div>
-      </AnimatePresence>
-
-      {/* Glassmorphic Navigation Buttons */}
-      <div className="absolute inset-0 flex items-center justify-between px-4 pointer-events-none">
-        <button
-          onClick={() => {  setPosition("l") ;prevSlide();}}
-          className="pointer-events-auto p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all"
-        >
-          <ChevronLeft size={24} />
-        </button>
-        <button
-          onClick={() => {setPosition("r") ; nextSlide();}}
-          className="pointer-events-auto p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all"
-        >
-          <ChevronRight size={24} />
-        </button>
-      </div>
-
-      {/* Progress Dots */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
-        {slides.map((_, i) => (
-          <div
-            key={i}
-            className={`h-1 transition-all duration-300 rounded-full ${i === index ? 'w-8 bg-white' : 'w-2 bg-white/30'}`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}

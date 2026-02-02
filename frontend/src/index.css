@@ -1,10 +1,10 @@
 @import "tailwindcss";
-
 @custom-variant dark (&:where(.dark, .dark *));
 
-
 @layer components {
-  .navbar{ @apply relative z-40 ml-8 mx-1.5  text-gray-500/55 cursor-default font-bold duration-300 hover:bg-gradient-to-r  hover:from-red-400 hover:to-yellow-300 hover:text-white px-6 py-2.5 rounded-4xl }
+  .navbar {
+    @apply relative z-40 ml-8 mx-1.5 text-gray-500/55 cursor-default font-bold duration-300 hover:bg-gradient-to-r hover:from-red-400 hover:to-yellow-300 hover:text-white px-6 py-2.5 rounded-4xl
+  }
 }
 
 @theme {
@@ -137,12 +137,17 @@ body {
 
 /* 1. The container for positioning */
 .spinning-border-box {
-  position: relative; /* Needed for absolute positioning of ::before */
-  background: #fff; /* Inner background color */
-  border-radius: 10px; /* Match the border radius for smooth corners */
-  overflow: hidden; /* Keeps the spinning part within the bounds */
+  position: relative;
+  /* Needed for absolute positioning of ::before */
+  background: #fff;
+  /* Inner background color */
+  border-radius: 10px;
+  /* Match the border radius for smooth corners */
+  overflow: hidden;
+  /* Keeps the spinning part within the bounds */
   text-align: center;
-  z-index: 50; /* Ensure content is above the pseudo-element */
+  z-index: 50;
+  /* Ensure content is above the pseudo-element */
 }
 
 /* 2. The spinning effect using a pseudo-element */
@@ -154,18 +159,27 @@ body {
   right: -5px;
   bottom: -5px;
   /* Conic gradient creates a colored "slice" effect */
-  background: conic-gradient(
-    #ff0000, /* Red */
-    #ffff00, /* Yellow */
-    #00ff00, /* Green */
-    #00ffff, /* Cyan */
-    #0000ff, /* Blue */
-    #ff00ff, /* Magenta */
-    #ff0000  /* Back to Red */
-  );
-  border-radius: 15px; /* Slightly larger than the main box for border effect */
-  z-index: 0; /* Place it behind the main content */
-  animation: spin 3s linear infinite; /* Apply the animation */
+  background: conic-gradient(#ff0000,
+      /* Red */
+      #ffff00,
+      /* Yellow */
+      #00ff00,
+      /* Green */
+      #00ffff,
+      /* Cyan */
+      #0000ff,
+      /* Blue */
+      #ff00ff,
+      /* Magenta */
+      #ff0000
+      /* Back to Red */
+    );
+  border-radius: 15px;
+  /* Slightly larger than the main box for border effect */
+  z-index: 0;
+  /* Place it behind the main content */
+  animation: spin 3s linear infinite;
+  /* Apply the animation */
 }
 
 /* 3. Define the animation */
@@ -173,14 +187,32 @@ body {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
 }
 
-.c{
-  margin: 0px !important ;
-  padding: 0px !important ;
+.c {
+  margin: 0px !important;
+  padding: 0px !important;
   height: 100% !important;
-  width :100% !important;
+  width: 100% !important;
 }
+
+
+
+.infinite-scroll {
+  animation: spin 10s linear infinite;
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0%);
+  }
+}
+

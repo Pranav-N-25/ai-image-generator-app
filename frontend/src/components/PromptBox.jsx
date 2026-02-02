@@ -132,6 +132,29 @@ const PromptBox = ({
     { label: "9:16", w: 720, h: 1280 },
     { label: "16:9", w: 1280, h: 720 },
   ]
+
+
+
+
+  const uploadImage = async (file) => {
+    const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_NAME; // Your Cloudinary cloud name
+    const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_PRESET;
+    const FOLDER = "SAAI"; // The folder you want to use
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
+    formData.append("folder", FOLDER); // Optional if set in preset
+
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+      { method: "POST", body: formData }
+    );
+
+    const data = await response.json();
+    return data.secure_url; // Retrieve the final URL
+  };
+
   // const [Prompt,setPrompt]= useState("");
   // const [response, setResponse] = useState('');
   // const [loading, setLoading] = useState(false);
@@ -166,24 +189,33 @@ const PromptBox = ({
     setLoading(true);
     setImageUrl(null);
     try {
+      var Input = "";
 
       if (!window.puter) { console.log("Image is not Loaded ! "); }
 
+      if (Prompt && selected) {
+        if (imageResolution.h === "auto") { Input = Prompt + ", and style of the image is *" + selected; }
+        else { Input = Prompt + ", and style of the image is *" + selected + ", and encode the aspect ratio of image with" + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image"; }
+      }
+      else {
+        if (imageResolution.h === "auto") { Input = Prompt; }
+        else { Input = Prompt + ", and encode the aspect ratio of image with" + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image"; }
+      }
+      console.log(Input);
       console.log("Width : " + imageResolution.w + "Height : " + imageResolution.h, "Selected Model : " + selectedModel.value);
-      const imageElement = await puter.ai.txt2img(`${Prompt}${selected != null ? `, and style of the image is *${selected}` : ""} ${imageResolution.h !== undefined ? `, and encode the aspect ratio of image with ${imageResolution.w} x ${imageResolution.h} for resixizing the image ` : ""}`, { model: selectedModel.value });
-
+      const imageElement = await puter.ai.txt2img(Input, { model: selectedModel.value }); //puter.ai.txt2img("A peaceful mountain landscape at sunset", { model: "gemini-2.5-flash-image-preview" });
+      const CloudinaryImageUrl = await uploadImage(imageElement);
       setImageUrl(imageElement);
-
-      console.log(Prompt);
+      console.log(CloudinaryImageUrl ? "Upload Successfull : "+ CloudinaryImageUrl : " Upload is not performed");
       setSubmit(false);
       setLoading(false);
-
+      // uploadImage(imageElement);
     }
 
     catch (error) {
       setLoading(false);
       setSubmit(false);
-      setError(error);
+      setError(error.error.message || error.error || error);
       console.log(error);
     }
 
@@ -286,7 +318,7 @@ const PromptBox = ({
                         exit={{ opacity: 0, scale: 0, y: -300 }}
                         transition={{ bounce: 0.25, visualDuration: 0.2, duration: 0.2 }}
                         key={index}
-                        onClick={() => { imageResolution.label == size.label ? setImageResolution({ label: "default" }) : setImageResolution(size) }}
+                        onClick={() => { imageResolution.label == size.label ? setImageResolution({ label: "default", w: "auto", h: "auto" }) : setImageResolution(size) }}
                         className={`my-3 mx-3 border-gray-500/46 duration-300 text-gray-600/68  ${imageResolution.label == size.label ? "border-yellow-500/66 text-yellow-600/88 bg-yellow-300/35" : ""} ${isMobile ? "px-[15.8px]" : "px-[35px]"}  select-none cursor-pointer text-sm py-1 md:py-1.5 m-1 md:w-10 flex justify-center items-center border rounded-xl `}>
                         {size.label}
                         {console.log(imageResolution.label + "\n" + "Width : " + imageResolution.w + "Height : " + imageResolution.h, "Selected Model : " + selectedModel.value)}
@@ -360,7 +392,7 @@ const PromptBox = ({
 
 
         <div
-          className={` w-full select-none mb-1 flex flex-row gap-2 pr-2 justify-center items-center`}>
+          className={` w-full select-none mb-1 flex flex-row pr-4 justify-center items-center`}>
           {
 
             <motion.div

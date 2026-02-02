@@ -14,8 +14,8 @@ const NavBar = ({ navStyle }) => {
   const location = useLocation();
   const { user } = useUser();
   const isTab = useMediaQuery({ maxWidth: 1111 });
-  const nav = ['Home', 'Image Generator', 'About', 'Contact'];
-  const allowedRoutes = ['/', '/about', '/contact', '/imagegen'];
+  const nav = ['Home', 'Image Generator', 'Collection', 'About'];
+  const allowedRoutes = ['/', '/about', '/collection', '/imagegen'];
   var current = "";
 
   if (!allowedRoutes.includes(location.pathname)) return null;
@@ -29,7 +29,7 @@ const NavBar = ({ navStyle }) => {
             <div className={`ml-8 /focus:bg-amber-200 mx-2 my-1.5 p-3 duration-200 text-white text-lg cursor-default font-extrabold hover:bg-orange-200/55 px-4 py-1.5 rounded-4xl`}>Home</div>
             <div className={`mx-8 my-1.5 p-3 duration-200 text-white text-lg cursor-default font-extrabold hover:bg-orange-200/55 px-4 py-1.5 rounded-4xl`}>About</div>
             <div className={`mx-8 my-1.5 p-3 duration-200 text-white text-lg cursor-default font-extrabold hover:bg-orange-200/55 px-4 py-1.5 rounded-4xl`}>Services</div>
-            <div className={`mx-8 my-1.5 p-3 duration-200 text-white text-lg cursor-default font-extrabold hover:bg-orange-200/55 px-4 py-1.5 rounded-4xl`}>Contact</div>
+            <div className={`mx-8 my-1.5 p-3 duration-200 text-white text-lg cursor-default font-extrabold hover:bg-orange-200/55 px-4 py-1.5 rounded-4xl`}>Collection</div>
             <div className={`mr-8 mx-2 my-1.5 p-3 duration-200 text-white text-lg cursor-default font-extrabold hover:bg-orange-200/55 px-4 py-1.5 rounded-4xl`}>Login</div>
           </div>
         </div>
@@ -41,22 +41,58 @@ const NavBar = ({ navStyle }) => {
           <Drawer drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
           {isTab
             ?
-            <div className="">
-              <div onClick={() => setDrawerOpen(!drawerOpen)}>
-                <FaBars className={`p-5 w-8 h-8 m-4 text-red-500 bg-red-500/85 ${drawerOpen || !isTab ? "hidden" : ""}`} />
+            <div className="p-1 flex w-full backdrop-blur-lg bg-white/15 ">
+              <div className={`flex w-full rounded-[2.5em] mx-1 justify-between items-center bg-white md:py-1 py-1 -px-2`}>
+                <div onClick={() => setDrawerOpen(!drawerOpen)}>
+                  <FaBars fill="red" className={`z-10 w-8 h-5.5 m-4 text-red-500 ${drawerOpen ? "text-white" : ""}`} />
+                </div>
+
+                <span className=" rounded-4xl flex items-center ">
+                  <img src={logo} alt="logo" width={50} height={50} className='ml-6 inline-block  -mt-2' />
+                  <span className=" text-gray-700/55 ml-2 md:text-xl text-xl font-bold inline-block "> SA AI</span>
+                </span>
+                {user ? <motion.div
+                  initial={{ opacity: 0, scale: 0, x: 3 }}
+                  animate={{ opacity: 1, scale: 1, x: 0 }}
+                  exit={{ opacity: 0, scale: 0, x: -300 }}
+                  transition={{ bounce: 0.25, visualDuration: 0.235, duration: 0.2 }}
+                  className=" ml-3.5 mx-2.5 min-w-[50px] min-h-[50px] shrink-0 bg-linear-to-r flex justify-end md:justify-center items-center to-red-300  from-yellow-300 p-1 rounded-full "
+                >
+
+                  <UserButton
+                    afterSignOutUrl="/"
+                    appearance={{
+                      elements: {
+                        avatarBox: {
+                          width: "50px",
+                          height: "50px",
+                          borderRadius: "55%",
+                        },
+                      },
+                    }}
+                  />
+                </motion.div>
+                  :
+                  <SignInButton className={`hover:duration-830 transition md:py-3 md:px-6 px-3 py-4 ml-.5   text-white cursor-pointer font-bold hover:bg-linear-to-r  hover:from-red-500 hover:to-yellow-500 hover:text-white  bg-linear-to-r  from-red-500 to-yellow-500 text-white rounded-4xl flex justify-center items-center pl-4 mr-2 md:bg-red-500 text-sm md:text-[17px]   `}><span>Get Start <FaArrowRight className='inline-block ml-1.5 text-sm' /></span>
+                  </SignInButton>}
+
+
               </div>
             </div>
+
+
+
             :
 
             < AnimatePresence mode="wait" >
 
-              <motion.div className=" select-none z-5 sticky shrink-0 w-full flex flex-row justify-center items-center /bg-gray-50 backdrop-blur-lg /bg-gradient-to-r  /to-red-500 /from-yellow-400"
+              <motion.div className=" select-none z-5 sticky shrink-0 w-full flex flex-row justify-center items-center bg-gray-50/2 backdrop-blur-lg /bg-gradient-to-r  /to-red-500 /from-yellow-400"
                 transition={{ type: "spring", duration: 0.4, visualDuration: 0.4 }}
                 initial={{ opacity: 0, scale: 0.95, y: -30 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0, y: -300 }}
               >
-                <div className="flex-1 mx-2 md:flex  rounded-4xl w-[80%] items-center my-1.5 py-7 px-0.5 justify-center h-16 bg-gradient-to-r from-red-400 to-yellow-300 ">
+                <div className="flex-1 mx-2 md:flex  rounded-4xl w-[80%] items-center my-1.5 py-8 px-0.5 justify-center h-16.5 bg-gradient-to-r from-red-400 to-yellow-300 ">
                   <div className="rounded-4xl flex w-[100%] items-center justify-center h-16 bg-white">
                     <span className=" rounded-4xl flex items-center flex-1">
                       <img src={logo} alt="logo" width={50} height={50} className='ml-6 inline-block -mt-2' />
@@ -142,7 +178,7 @@ const NavBar = ({ navStyle }) => {
                   animate={{ opacity: 1, scale: 1, x: 0 }}
                   exit={{ opacity: 0, scale: 0, x: -300 }}
                   transition={{ bounce: 0.25, visualDuration: 0.235, duration: 0.2 }}
-                  className=" mx-2 min-w-[50px] min-h-[50px] shrink-0 bg-linear-to-r flex justify-center items-center to-red-300  from-yellow-300 p-1 rounded-full "
+                  className=" mx-2 min-w-[50px] min-h-[50px] shrink-0 bg-linear-to-r flex justify-end md:justify-center items-center to-red-300  from-yellow-300 p-1 rounded-full "
                 >
 
                   <UserButton

@@ -19,7 +19,7 @@ export const ImageGen = () => {
   const [submit, setSubmit] = React.useState(false);
   const [button, setButton] = React.useState(false);
   const [error, setError] = React.useState();
-  const [imageResolution, setImageResolution] = React.useState({ label: "default" });
+  const [imageResolution, setImageResolution] = React.useState({ label: "default", w: "auto", h: "auto" });
   const isTab = useMediaQuery({ maxWidth: 1111 });
   const isTab2 = useMediaQuery({ maxWidth: 1332 });
   const isTab3 = useMediaQuery({ maxWidth: 1173 });
@@ -65,11 +65,12 @@ export const ImageGen = () => {
           exit={{ y: -300, opacity: 0 }}
           viewport={{ once: true }} // Ensures animation runs only once
           transition={{ type: "spring", bounce: 0.1, visualDuration: 0, duration: 0.1 }}
-          className={`z-1 shadow-2xl w-full duration-500 md:w-[95%] md:py-3 md:px-3 md:gap-3 py-2.5 pb-19 px-1 bg-white border-black/15 md:rounded-[3em] `} >
+          className={`m-2 rounded-[2.5em] z-1 shadow-2xl w-full duration-500 md:w-[95%] md:py-3 md:px-3 md:gap-3 py-2.5 pb-19 px-1 bg-white border-red-500/85 /border md:rounded-[3em] `} >
           {/* <h2 className="flex justify-center mb-6 font-extrabold text-4xl
     ">AI Generated Image</h2> */}
           <div className="p-1 flex h-full md:flex-row flex-col md:justify-center items-center md:items-start w-full gap-5 " style={{ border: "none" }} >
-            <PromptBox Prompt={Prompt}
+            <PromptBox
+              Prompt={Prompt}
               setPrompt={setPrompt}
               Image_Type={Image_Type}
               imageUrl={imageUrl}
@@ -98,17 +99,17 @@ export const ImageGen = () => {
             <div style={{ border: "none" }} className={`relative md:w-[1053px] mt-2  md:h-[70vh] w-full h-[275px] grow outline-none ${useMediaQuery({ maxWidth: 1116 }) ? "md:h-[80vh]" : ""} `}>
               {button ?
                 error ?
-                  <div className="absolute justify-center  md:flex items-center p-6 w-full h-[345px] md:h-full md:w-full md:rounded-4xl bg-linear-to-r  from-red-400/35 to-yellow-200/65 animate-pulse text-wrap overflow-x-auto rounded-3xl">
-                    {/*<span className="text-lg font-bold opacity-35 text-red-500 ">{error ? (typeof error === 'object' ? error.error.message ? error.error.message : JSON.stringify(error) ||error.error : error) : ""}</span> */}{JSON.stringify(error)}
+                  <div className=" whitespace-normal break-words absolute justify-center  md:flex items-center p-6 w-full h-[345px] md:h-full md:w-full md:rounded-4xl bg-linear-to-r  from-red-400/35 to-yellow-200/65 animate-pulse text-wrap overflow-x-auto rounded-3xl">
+                    {/*<span className="text-lg font-bold opacity-35 text-red-500 ">{error ? (typeof error === 'object' ? error.error.message ? error.error.message : JSON.stringify(error) ||error.error : error) : ""}</span> JSON.stringify(error) */}{error == null ? "Network Error" : JSON.stringify(error)}
                   </div>
                   :
                   <>
                     {loading && <><div className="absolute w-full h-[345px] md:h-full md:w-full md:rounded-4xl bg-linear-to-r  from-red-400/35 to-yellow-200/65 animate-pulse rounded-3xl"></div>
-                      <img src={ImageLoading} className="absolute h-[255px] w-[235px] rounded-4xl top-10 left-[17%] md:top-[20%] md:left-[33%]" /></>} {/*<span style={{ border: "none" }} className=" absolute z-1 top-1/2 left-[45%] border-0 bg-gray-400">Loading ... </span>*/}
+                      <img src={ImageLoading} className="absolute h-[255px] w-[235px] rounded-4xl top-10 left-[40%] md:top-[20%] md:left-[33%]" /></>} {/*<span style={{ border: "none" }} className=" absolute z-1 top-1/2 left-[45%] border-0 bg-gray-400">Loading ... </span>*/}
 
                     {!loading &&
                       <>
-                        <img className=" absolute z-1 w-full h-[345px] border-none rounded-3xl md:rounded-4xl decoration-0 outline-1 outline-amber-50 "
+                        <img className=" absolute z-1 h-full w-full inset-0 border-none rounded-3xl md:rounded-4xl decoration-0 outline-1 outline-amber-50 "
                           src={imageUrl}
                           // key={imageUrl}
                           alt=""

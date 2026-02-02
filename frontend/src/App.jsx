@@ -8,18 +8,17 @@ import Footer from "./components/Footer";
 // import { AIImageGeneratedURL, MyImageGenerator } from "./pages/ImgGenerator";
 const App = () => {
   return (
-    <>
-      <NavBar navStyle={2}/>
+    <div className="w-full h-screen">
+      <NavBar navStyle={2} />
       <Routes>
         <Route exact path="/" element={Pages.Home} />
         <Route path="*" element={Pages.NotFoundPage} />
-        <Route path="/chatbot" element={Pages.ChatBot} />
         <Route path="/imagegen" element={Pages.ImgGenerator} />
-        <Route path="/codegen" element={Pages.CodeGenerator} />
-        <Route path="/summarizer" element={Pages.Summerizer} />
+        <Route path="/collection" element={Pages.Collection} />
+        <Route path="/about" element={Pages.About} />
       </Routes>
       <Footer />
-    </>
+    </div>
   );
 };
 

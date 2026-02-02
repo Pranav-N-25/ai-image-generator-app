@@ -9,7 +9,7 @@ const homeNavBar = ({ navStyle }) => {
   const [open, isOpen] = React.useState(false);
   const location = useLocation();
   const { user } = useUser();
-  const nav = ['Home', 'Image Generator', 'About', 'Contact'];
+  const nav = ['Home', 'Image Generator', 'About', 'Collection'];
   const allowedRoutes = ['/'];
   var current = "";
 
@@ -157,7 +157,7 @@ export default homeNavBar
 //         <div className={`ml-8 mx-1.5 duration-200 text-gray-500/55 text-md cursor-default font-bold hover:bg-gradient-to-r  hover:from-red-400 hover:to-yellow-300 hover:text-white px-6 py-2.5 rounded-4xl`}>Home</div>
 //         <div className={`mx-2 my-1.5 duration-200 text-gray-500/55 text-md cursor-default font-bold hover:bg-gradient-to-r  hover:from-red-400 hover:to-yellow-300 hover:text-white px-6 py-2.5 rounded-4xl`}>About</div>
 //         <div className={`mx-2 my-1.5 duration-200 text-gray-500/55 text-md cursor-default font-bold hover:bg-gradient-to-r  hover:from-red-400 hover:to-yellow-300 hover:text-white px-6 py-2.5 rounded-4xl`}>AI</div>
-//         <div className={`mx-2 my-1.5 duration-200 text-gray-500/55 text-md cursor-default font-bold hover:bg-gradient-to-r  hover:from-red-400 hover:to-yellow-300 hover:text-white px-6 py-2.5 rounded-4xl`}>Contact</div>
+//         <div className={`mx-2 my-1.5 duration-200 text-gray-500/55 text-md cursor-default font-bold hover:bg-gradient-to-r  hover:from-red-400 hover:to-yellow-300 hover:text-white px-6 py-2.5 rounded-4xl`}> </div>
 //         {user ? <div className="fixed md:top-7 top-6 right-7.5 w-10 h-10 z-50">
 //           <UserButton
 //             afterSignOutUrl="/"

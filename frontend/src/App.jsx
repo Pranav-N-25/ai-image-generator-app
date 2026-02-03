@@ -8,7 +8,7 @@ import Footer from "./components/Footer";
 // import { AIImageGeneratedURL, MyImageGenerator } from "./pages/ImgGenerator";
 const App = () => {
   return (
-    <div className="w-full h-screen">
+    <div className="w-full h-screen bg-white/43 backdrop-blur-3xl">
       <NavBar navStyle={2} />
       <Routes>
         <Route exact path="/" element={Pages.Home} />

@@ -9,7 +9,7 @@ const saveImage = async (req, res) => {  // POST request
     console.log("Image name : " + imageName + "\n User ID : " + userId + "\n Image URL : " + imageUrl);
     // res.status(200).json({ message: "Successfully received the api request " });
     image = await Image.create({
-        imageName, userId, imageUrl
+         userId,imageName, imageUrl
     })
     
     res.json(image);

@@ -16,13 +16,14 @@ const clerkWebhookHandler = async (req, res) => {
     const { data, type } = wh.verify(body, svixHeaders);
 
     switch (type) {
-      case "user.created":
+      case "session.created":
         await User.create({
           _id: data.id,
           name: `${data.first_name || ""} ${data.last_name || ""}`.trim(),
           email: data.email_addresses?.[0]?.email_address || "",
           image: data.profile_image_url || "",
         });
+        console.log("Data : "+data);
         console.log("User created via webhook:", data.id);
         break;
 

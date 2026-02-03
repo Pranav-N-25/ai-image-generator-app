@@ -11,7 +11,7 @@ import { Sketch, Wheel } from '@uiw/react-color';
 import { RiColorFilterAiLine } from "react-icons/ri";
 import Resizer from "react-image-file-resizer";
 import puter from "@heyputer/puter.js";
-
+import { useAppContext } from "../context/AppContext.jsx";
 
 // import { usePollinationsImage } from "@pollinations/react";
 // const modelList = [
@@ -133,8 +133,7 @@ const PromptBox = ({
     { label: "16:9", w: 1280, h: 720 },
   ]
 
-
-
+  const { id, api } = useAppContext()
 
   const uploadImage = async (file) => {
     const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_NAME; // Your Cloudinary cloud name
@@ -152,6 +151,9 @@ const PromptBox = ({
     );
 
     const data = await response.json();
+    // console.log(data);
+    const img_upload_res = await api.post("/api/image",{ imageName: `${data.display_name}.png`, userId: id, imageUrl: data.secure_url });
+    console.log(img_upload_res);
     return data.secure_url; // Retrieve the final URL
   };
 
@@ -204,9 +206,13 @@ const PromptBox = ({
       console.log(Input);
       console.log("Width : " + imageResolution.w + "Height : " + imageResolution.h, "Selected Model : " + selectedModel.value);
       const imageElement = await puter.ai.txt2img(Input, { model: selectedModel.value }); //puter.ai.txt2img("A peaceful mountain landscape at sunset", { model: "gemini-2.5-flash-image-preview" });
-      const CloudinaryImageUrl = await uploadImage(imageElement);
       setImageUrl(imageElement);
-      console.log(CloudinaryImageUrl ? "Upload Successfull : "+ CloudinaryImageUrl : " Upload is not performed");
+
+      if (id) {
+        const CloudinaryImageUrl = await uploadImage(imageElement);
+        console.log(CloudinaryImageUrl ? "Upload Successfull : " + CloudinaryImageUrl : " Upload is not performed");
+
+      }
       setSubmit(false);
       setLoading(false);
       // uploadImage(imageElement);
@@ -451,7 +457,7 @@ const PromptBox = ({
                 viewport={{ once: true }} // Ensures animation runs only once
                 transition={{ type: "spring", bounce: 0.3, visualDuration: 0, duration: 0.01 }}
                 className={`${showMenu && "md:-translate-y-38 md:translate-x-1.5 -translate-x-43 -translate-y-40"}
-                  absolute -left-25 duration-500 transition-all
+                  absolute -left-25 duration-500 transition-all z-1
                    -mx-15 mb-5 w-68 text-left bg-white border-black/15 border rounded-xl shadow-lg `}
               >
                 <li className="px-4 py-2 flex justify-center items-center rounded-t-xl border-b-2 bg-red-500 font-extrabold text-white">

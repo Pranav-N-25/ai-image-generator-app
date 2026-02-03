@@ -86,13 +86,13 @@ const NavBar = ({ navStyle }) => {
 
             < AnimatePresence mode="wait" >
 
-              <motion.div className=" select-none z-5 sticky shrink-0 w-full flex flex-row justify-center items-center bg-gray-50/2 backdrop-blur-lg /bg-gradient-to-r  /to-red-500 /from-yellow-400"
+              <motion.div className="  rounded-b-xl select-none py-.5 z-5 sticky shrink-0 w-full flex flex-row justify-center items-center /bg-gradient-to-r  bg-white/ /to-red-500 /from-yellow-400"
                 transition={{ type: "spring", duration: 0.4, visualDuration: 0.4 }}
                 initial={{ opacity: 0, scale: 0.95, y: -30 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0, y: -300 }}
               >
-                <div className="flex-1 mx-2 md:flex  rounded-4xl w-[80%] items-center my-1.5 py-8 px-0.5 justify-center h-16.5 bg-gradient-to-r from-red-400 to-yellow-300 ">
+                <div className="flex-1 mx-2 md:flex  rounded-4xl w-[80%] items-center my-1.5 py-8.5 px-[3px] justify-center h-16.5 bg-gradient-to-r from-red-500/55 to-yellow-300/55 ">
                   <div className="rounded-4xl flex w-[100%] items-center justify-center h-16 bg-white">
                     <span className=" rounded-4xl flex items-center flex-1">
                       <img src={logo} alt="logo" width={50} height={50} className='ml-6 inline-block -mt-2' />
@@ -163,7 +163,7 @@ const NavBar = ({ navStyle }) => {
 
                     {user ?
                       <>
-                        <div className={`pr-8 mx-1.5 my-1.5 p-3 text-white text-md cursor-default font-bold hover:bg-gradient-to-r hover:from-red-500 hover:to-yellow-500 hover:text-white px-6 py-3 rounded-4xl flex justify-center items-center pl-8 mr-1 bg-red-500 transition duration-300 `}><span>Subscribe</span>
+                        <div className={` mx-1.5 my-1.5 mr-2 text-white text-md cursor-default font-bold hover:bg-gradient-to-r hover:from-red-500 hover:to-yellow-500 hover:text-white px-6 py-3 rounded-4xl flex justify-center items-center pl-8 mr-1 bg-red-500 transition duration-300 `}><span>Subscribe</span>
                         </div>
 
 
@@ -178,7 +178,7 @@ const NavBar = ({ navStyle }) => {
                   animate={{ opacity: 1, scale: 1, x: 0 }}
                   exit={{ opacity: 0, scale: 0, x: -300 }}
                   transition={{ bounce: 0.25, visualDuration: 0.235, duration: 0.2 }}
-                  className=" mx-2 min-w-[50px] min-h-[50px] shrink-0 bg-linear-to-r flex justify-end md:justify-center items-center to-red-300  from-yellow-300 p-1 rounded-full "
+                  className=" mx-2 min-w-[50px] min-h-[50px] shrink-0 bg-linear-to-r flex justify-end md:justify-center items-center to-red-500  from-yellow-300 p-1 rounded-full "
                 >
 
                   <UserButton
@@ -186,8 +186,8 @@ const NavBar = ({ navStyle }) => {
                     appearance={{
                       elements: {
                         avatarBox: {
-                          width: "50px",
-                          height: "50px",
+                          width: "53px",
+                          height: "53px",
                           borderRadius: "55%",
                         },
                       },

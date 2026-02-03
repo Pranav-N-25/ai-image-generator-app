@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
 const imageSchema = new mongoose.Schema({
-    imageName: {
+    userId: {
         type: String,
         required: true
     },
-    userId: {
+    imageName: {
         type: String,
         required: true
     },

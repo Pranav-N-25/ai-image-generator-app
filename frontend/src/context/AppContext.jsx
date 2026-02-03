@@ -1,8 +1,8 @@
 import React from "react";
 import { useMediaQuery } from "react-responsive";
 import { createContext, useContext } from "react";
-import { useUser, useAuth} from "@clerk/clerk-react";
-
+import { useUser, useAuth } from "@clerk/clerk-react";
+import axios from "axios";
 export const AppContext = createContext();
 
 export const useAppContext = () => {  // for providing
@@ -17,7 +17,7 @@ export const AppContextProvider = ({ children }) => { //for wrapping the app
   const { getToken } = useAuth();
   const isMobile = useMediaQuery({ maxWidth: 768 });
   // Accessing user parameters
-
+  const api = axios.create({ baseURL: import.meta.env.VITE_BACKEND_URL });
   const id = user ? user.id : null;
   const email = user ? user.primaryEmailAddress?.emailAddress : null; // safest way
   const firstName = user ? user.firstName : null;
@@ -29,6 +29,7 @@ export const AppContextProvider = ({ children }) => { //for wrapping the app
   const updatedAt = user ? user.updatedAt : null;
 
   const value = {
+    api,
     id,
     email,
     firstName,

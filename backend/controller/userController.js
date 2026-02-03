@@ -4,8 +4,9 @@ const { Webhook } = require("svix");
 // Clerk webhook handler
 const clerkWebhookHandler = async (req, res) => {
   try {
+    const SECRET = process.env.CLERK_SIGNIN_SECRET;
     // Verify webhook signature (adjust as needed for your setup)
-    const wh = new Webhook(process.env.CLERK_SIGNING_SECRET);
+    const wh = new Webhook(SECRET);
     const svixHeaders = {
       "svix-id": req.headers["svix-id"],
       "svix-signature": req.headers["svix-signature"],

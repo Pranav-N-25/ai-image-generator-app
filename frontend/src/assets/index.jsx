@@ -1,15 +1,15 @@
-import _1 from "./_1.png";
-import _2 from "./_2.png";
-import _3 from "./_3.png";
-import _4 from "./_4.png";
-import _5 from "./_5.png";
-import _6 from "./_6.png";
-import __1 from "./__1.png";
-import __2 from "./__2.png";
-import __3 from "./__3.png";
-import __4 from "./__4.png";
-import __5 from "./__5.png";
-import __6 from "./__6.png";
+import _1 from "./_1.jpg";
+import _2 from "./_2.jpg";
+import _3 from "./_3.jpg";
+import _4 from "./_4.jpg";
+import _5 from "./_5.jpg";
+import _6 from "./_6.jpg";
+import __1 from "./__1.jpg";
+import __2 from "./__2.jpg";
+import __3 from "./__3.jpg";
+import __4 from "./__4.jpg";
+import __5 from "./__5.jpg";
+import __6 from "./__6.jpg";
 
 export const carouselSlides = {
     slide1: _1,

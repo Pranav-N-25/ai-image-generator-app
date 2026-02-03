@@ -2,7 +2,7 @@
 //React
 import React from 'react';
 import { NavLink, useLocation, Link } from "react-router-dom";
-import logo from '../assets/logo-ai.png'
+import logo from '../assets/logo-ai.webp'
 
 // Icons
 

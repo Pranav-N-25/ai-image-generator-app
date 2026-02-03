@@ -1,5 +1,5 @@
 import React from 'react'
-import logo from '../assets/logo-ai.png'
+import logo from '../assets/logo-ai.webp'
 import { FaArrowRight } from "react-icons/fa";
 import { useUser, SignInButton, UserButton } from "@clerk/clerk-react";
 import { NavLink, useLocation, Link } from "react-router-dom";

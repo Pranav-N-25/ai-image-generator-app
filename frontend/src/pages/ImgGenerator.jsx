@@ -2,9 +2,9 @@ import React from "react";
 // import { usePollinationsImage } from "@pollinations/react";
 import PromptBox from "../components/PromptBox";
 import LoadingFrame from "../assets/LoadingFrame.gif";
-import ImageLoading from "../assets/Image-loading.gif";
+import ImageLoading from "../assets/Image-loading.webp";
 import { FaDownload } from "react-icons/fa";
-import logo from '../assets/logo-ai.png';
+import logo from '../assets/logo-ai.webp';
 import { motion, AnimatePresence } from "framer-motion";
 import { imageFileResizer } from "react-image-file-resizer";
 import { useMediaQuery } from "react-responsive";
@@ -40,7 +40,7 @@ export const ImageGen = () => {
       const ctx = canvas.getContext("2d");
 
       // Draw resized image
-      ctx.drawImage(img, 0, 0, imageResolution.w ? imageResolution.w : 1024, imageResolution.h ? imageResolution.h : 1024);
+      ctx.drawImage(img, 0, 0, imageResolution.w !== "auto" ? imageResolution.w : 1024, imageResolution.h !== "auto" ? imageResolution.h : 1024);
 
       // Convert to data URL
       const dataUrl = canvas.toDataURL("image/png");

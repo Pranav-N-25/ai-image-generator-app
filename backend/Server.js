@@ -12,7 +12,7 @@ const userRoute = require("./routes/userRoute.js");
 dotenv.config();
 const app = express();
 const PORT = 3000;
-
+console.log(process.env.CLERK_SIGNIN_SECRET);
 // DataBase Connection
 mongoose.connect(process.env.MONGODB_URL,{dbName:"SAAI"})
     .then(response => {

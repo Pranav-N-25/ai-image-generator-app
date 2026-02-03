@@ -4,8 +4,8 @@ import { TbRectangleFilled } from "react-icons/tb";
 import { FaChevronDown } from "react-icons/fa";
 import MediaQuery from "react-responsive";
 import OpenRouter from "../config/OpenRouter.jsx";
-import GA from "../assets/logo-ai.png";
-import GA_prompt from "../assets/logo-ai.png";
+import GA from '../assets/logo-ai.webp'
+import GA_prompt from '../assets/logo-ai.webp'
 import { motion } from "framer-motion";
 import { Sketch, Wheel } from '@uiw/react-color';
 import { RiColorFilterAiLine } from "react-icons/ri";

@@ -190,6 +190,7 @@ const PromptBox = ({
     if (Prompt == undefined) return;
     setLoading(true);
     setImageUrl(null);
+    setError(null);
     try {
       var Input = "";
 

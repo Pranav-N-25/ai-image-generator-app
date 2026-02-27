@@ -7,7 +7,7 @@ const SuccessAlert1 = ({ notify, setNotify }) => {
   return (
     <div className="">
       <div
-        className={`${
+        className={`z-10 ${
           !notify ? "translate-x-185" : ""
         } duration-500 ease-in-out transform fixed flex bottom-8 right-8 w-[45%] rounded-lg border-l-[6px] break-words border-green-400 bg-gray-50 shadow-lg px- py-8 shadow-1 dark:bg-dark-2 md:p-5`}
       >
@@ -42,11 +42,9 @@ const SuccessAlert1 = ({ notify, setNotify }) => {
               Message Sent Successfully
             </h5> */}
           <p className="mb-6 text-xs leading-relaxed text-body-color dark:text-dark-6">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when
+            You Have Successfully Logged In
           </p>
-          <div className="flex">
+          {/* <div className="flex">
             <a
               href="javascript:void(0)"
               className="mr-6 inline-block text-xs duration-300 /bg-gray-50  shadow-green-400  shadow-sm hover:shadow-none font-bold text-green-500 hover:text-white px-3 py-3 rounded-xl hover:bg-green-500"
@@ -56,7 +54,7 @@ const SuccessAlert1 = ({ notify, setNotify }) => {
             <button className="text-xs duration-300 shadow-red-400  shadow-sm hover:shadow-none font-bold text-red-500 hover:text-white px-3 py-3 rounded-xl hover:bg-red-500 cursor-pointer">
               Dismiss
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { FaArrowUp } from "react-icons/fa";
 import { TbRectangleFilled } from "react-icons/tb";
 import { FaChevronDown } from "react-icons/fa";
@@ -44,7 +44,9 @@ const PromptBox = ({
   isTab2,
   isTab3,
   isTab4,
-  isMobile
+  isMobile,
+  fileName,
+  setFilename
 }) => {
 
   const icons = {
@@ -133,9 +135,12 @@ const PromptBox = ({
     { label: "16:9", w: 1280, h: 720 },
   ]
 
-  const { id, api } = useAppContext()
+  const { id, api } = useAppContext();
+  const [input, setInput] = useState("");
+  const [input2, setInput2] = useState("");
 
   const uploadImage = async (file) => {
+    setFilename(null);
     const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_NAME; // Your Cloudinary cloud name
     const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_PRESET;
     const FOLDER = "SAAI"; // The folder you want to use
@@ -152,7 +157,8 @@ const PromptBox = ({
 
     const data = await response.json();
     // console.log(data);
-    const img_upload_res = await api.post("/api/image",{ imageName: `${data.display_name}.png`, userId: id, imageUrl: data.secure_url });
+    const img_upload_res = await api.post("/api/image", { imageName: `${data.display_name}.png`, userId: id, imageUrl: data.secure_url });
+    setFilename(data.imageName);
     console.log(img_upload_res);
     return data.secure_url; // Retrieve the final URL
   };
@@ -166,10 +172,12 @@ const PromptBox = ({
   const [showMenu, setShowMenu] = useState(false);
   const [on, isOn] = useState(false);
   const textareaRef = useRef(null);
+  const colorRef = useRef(null);
+  const menuRef = useRef(null);
   const [selected, setSelected] = useState(null);
   // const [imageResolution, setImageResolution] = useState({ label: "default" });
   const [openColorPicker, setOpenColorPicker] = useState(false);
-  const [colour, setColour] = useState("");
+  const [colour, setColour] = useState("#ffff");
   // eslint-disable-next-line no-unused-vars
 
   // Check if the screen width is less than or equal to 768px
@@ -180,40 +188,70 @@ const PromptBox = ({
   };
 
 
-  const handleOutsideClick = () => {
 
-  }
+  const useClickOutside = (ref, callback) => {
+    useEffect(() => {
+      const handleClick = (event) => {
+        // Check if the click target is NOT inside the element (ref.current)
+        if (ref.current && !ref.current.contains(event.target)) {
+          callback();
+        }
+      };
+
+      // Add listener to the entire document
+      document.addEventListener("mousedown", handleClick);
+
+      // Cleanup: Remove listener when component unmounts
+      return () => {
+        document.removeEventListener("mousedown", handleClick);
+      };
+    }, [ref, callback]);
+  };
+
+  useClickOutside(colorRef, () => setOpenColorPicker(false));
+  useClickOutside(menuRef, () => setShowMenu(false))
+
+
 
 
   const GenerateImage = async () => {
-    if (Prompt.trim() === "") { return }
-    if (Prompt == undefined) return;
+    // if (Prompt.trim() === "") { return }
     setLoading(true);
     setImageUrl(null);
     setError(null);
+    setInput(null);
+    setInput2(null);
     try {
-      var Input = "";
+
 
       if (!window.puter) { console.log("Image is not Loaded ! "); }
+      console.log("prompt :" + Prompt);
+      setInput((selected ? ", and style of the image is * " + selected : "") + (on ? " with Image Color Scheme " + colour : "") + (imageResolution.w === "auto" ? "" : ", and encode the aspect ratio of image with " + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image"))
 
-      if (Prompt && selected) {
-        if (imageResolution.h === "auto") { Input = Prompt + ", and style of the image is *" + selected; }
-        else { Input = Prompt + ", and style of the image is *" + selected + ", and encode the aspect ratio of image with" + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image"; }
-      }
-      else {
-        if (imageResolution.h === "auto") { Input = Prompt; }
-        else { Input = Prompt + ", and encode the aspect ratio of image with" + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image"; }
-      }
-      console.log(Input);
-      console.log("Width : " + imageResolution.w + "Height : " + imageResolution.h, "Selected Model : " + selectedModel.value);
-      const imageElement = await puter.ai.txt2img(Input, { model: selectedModel.value }); //puter.ai.txt2img("A peaceful mountain landscape at sunset", { model: "gemini-2.5-flash-image-preview" });
-      setImageUrl(imageElement);
 
+      // if (Prompt && selected) {
+      //   if (imageResolution.h === "auto") { setInput(Prompt + ", and style of the image is *" + selected); }
+      //   else { setInput(Prompt + ", and style of the image is *" + selected + ", and encode the aspect ratio of image with" + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image"); }
+      // }
+      // else {
+      //   if (imageResolution.h === "auto") { setInput(Prompt); }
+      //   else { setInput(Prompt + ", and encode the aspect ratio of image with" + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image"); }
+      // }
+
+      // setInput2(input + (on ? (" The Image Color style is " + colour) : ("")));
+
+      // console.log("Input : " + input + "\n Colour Toggle : " + on + "\n Colour :" + colour);
+      console.log("Width : " + imageResolution.w + " Height : " + imageResolution.h, "Selected Model : " + selectedModel.value + "\n Input : " + (Prompt + input));
+      const imageElement = await puter.ai.txt2img((Prompt + input), { model: selectedModel.value }); //puter.ai.txt2img("A peaceful mountain landscape at sunset", { model: "gemini-2.5-flash-image-preview" });
+      setInput2((Prompt + input));
       if (id) {
         const CloudinaryImageUrl = await uploadImage(imageElement);
         console.log(CloudinaryImageUrl ? "Upload Successfull : " + CloudinaryImageUrl : " Upload is not performed");
 
       }
+      setImageUrl(imageElement);
+
+
       setSubmit(false);
       setLoading(false);
       // uploadImage(imageElement);
@@ -222,7 +260,8 @@ const PromptBox = ({
     catch (error) {
       setLoading(false);
       setSubmit(false);
-      setError(error.error.message || error.error || error);
+      setError(
+        {"Status":error.error.status,"Code":error.error.code , "Message":error.error.message,});
       console.log(error);
     }
 
@@ -238,7 +277,7 @@ const PromptBox = ({
 
   return (
     <div
-      className={` ${isMobile ? "px-1 w-full " : ''}
+      className={` ${isMobile ? "px-1 w-full " : 'w-full'}
     w-[98%]`}
     >
       <motion.div
@@ -267,7 +306,8 @@ const PromptBox = ({
               setButton(true);
               setLoading(true);
               setSubmit(true);
-              GenerateImage(Prompt);
+              setPrompt(e.target.value);
+              GenerateImage();
 
 
             }
@@ -328,7 +368,7 @@ const PromptBox = ({
                         onClick={() => { imageResolution.label == size.label ? setImageResolution({ label: "default", w: "auto", h: "auto" }) : setImageResolution(size) }}
                         className={`my-3 mx-3 border-gray-500/46 duration-300 text-gray-600/68  ${imageResolution.label == size.label ? "border-yellow-500/66 text-yellow-600/88 bg-yellow-300/35" : ""} ${isMobile ? "px-[15.8px]" : "px-[35px]"}  select-none cursor-pointer text-sm py-1 md:py-1.5 m-1 md:w-10 flex justify-center items-center border rounded-xl `}>
                         {size.label}
-                        {console.log(imageResolution.label + "\n" + "Width : " + imageResolution.w + "Height : " + imageResolution.h, "Selected Model : " + selectedModel.value)}
+                        {/* {console.log(imageResolution.label + "\n" + "Width : " + imageResolution.w + "Height : " + imageResolution.h, "Selected Model : " + selectedModel.value)} */}
 
                       </motion.li>
                     </ul>
@@ -336,8 +376,10 @@ const PromptBox = ({
 
                 })
               }
-              <motion.div
 
+
+              <motion.div
+                ref={colorRef}
                 initial={{ opacity: 0, scale: 0, y: -35, x: -5 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 viewport={{ once: true }} // Ensures animation runs only once
@@ -360,12 +402,12 @@ const PromptBox = ({
                 </div>
                 {openColorPicker &&
                   <motion.div
-                    initial={{ opacity: 0, y: -335, x: -80 }}
-                    animate={{ opacity: 1, y: -350 }}
+                    initial={{ opacity: 0, y: isMobile ? -340 : -330, x: -22 }}
+                    animate={{ opacity: 1, y: isMobile ? -348 : -345 }}
                     exit={{ opacity: 0, y: -10 }}
                     viewport={{ once: true }} // Ensures animation runs only once
                     transition={{ type: "spring", bounce: 0.25, visualDuration: 0.1, duration: 0.15 }}
-                    className={`absolute duration-400  translate-y-9 md:-translate-y-3 md:-translate-x -translate-x-10 rounded-3xl`}>
+                    className={`absolute duration-400  translate-y-9 md:-translate-y-3 md:-translate-x-14 -translate-x-10 rounded-3xl`}>
                     <Sketch color={colour} onChange={(newColor) => setColour(newColor.hex)} width={253} />
                     {console.log(colour)}
                     <div>    <button
@@ -385,7 +427,8 @@ const PromptBox = ({
                     <div className={`absolute right-12 text-sm bottom-2 bg-linear-to-r ${on ? "from-red-500 to-yellow-300 duration-500 transition-all bg-clip-text text-transparent" : "text-gray-400"}`}>Apply</div>
 
 
-                  </motion.div>}
+                  </motion.div>
+                }
 
               </motion.div>
             </div>
@@ -399,7 +442,7 @@ const PromptBox = ({
 
 
         <div
-          className={` w-full select-none mb-1 flex flex-row pr-4 justify-center items-center`}>
+          className={` w-full h-full select-none grow flex flex-row pr-4 justify-center items-center`}>
           {
 
             <motion.div
@@ -438,6 +481,7 @@ const PromptBox = ({
             viewport={{ once: true }} // Ensures animation runs only once
             transition={{ type: "spring", bounce: 0.3, visualDuration: 0, duration: 0.01 }}
             type="button"
+            ref={menuRef}
             className={`mr-2 relative border-[1.5px] border-red-500/35 hover:border-red-500/10  ${!button && "text-red-600/55 hover:bg-red-500/10"
               }
                 ${button && "text-black/75 "}

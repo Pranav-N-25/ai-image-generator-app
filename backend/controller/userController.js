@@ -16,7 +16,7 @@ const clerkWebhookHandler = async (req, res) => {
     const { data, type } = wh.verify(body, svixHeaders);
 
     switch (type) {
-      case "session.created":
+      case "user.created":
         await User.create({
           _id: data.id,
           name: `${data.first_name || ""} ${data.last_name || ""}`.trim(),
@@ -51,7 +51,7 @@ const clerkWebhookHandler = async (req, res) => {
     res.status(200).json({ message: "Webhook processed" });
   } catch (error) {
     console.error("Webhook error:", error);
-    res.status(400).json({ error: "Invalid webhook" });
+    res.status(400).json({ error: "Invalid webhook "+ data });
   }
 };
 

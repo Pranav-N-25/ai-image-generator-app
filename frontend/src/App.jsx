@@ -8,8 +8,8 @@ import Footer from "./components/Footer";
 // import { AIImageGeneratedURL, MyImageGenerator } from "./pages/ImgGenerator";
 const App = () => {
   return (
-    <div className="w-full h-screen bg-white/43 backdrop-blur-3xl">
-      <NavBar navStyle={2} />
+    <div className="w-full h-screen bg-white/43 overflow-y-auto backdrop-blur-3xl">
+      <NavBar />
       <Routes>
         <Route exact path="/" element={Pages.Home} />
         <Route path="*" element={Pages.NotFoundPage} />
@@ -23,3 +23,5 @@ const App = () => {
 };
 
 export default App;
+
+/* navStyle={2}*/

@@ -10,7 +10,11 @@ import __3 from "./__3.jpg";
 import __4 from "./__4.jpg";
 import __5 from "./__5.jpg";
 import __6 from "./__6.jpg";
-
+import pranav from "./Pranav N.webp";
+import frame from "./frame.png";
+import logo from "./logo-ai.webp";
+import logo2 from "./amma.png";
+import logo3 from "./image.png";
 export const carouselSlides = {
     slide1: _1,
     slide2: _2,
@@ -25,3 +29,5 @@ export const carouselSlides = {
     _slide5: __5,
     _slide6: __6
 };
+
+export const pranav1 = { pranav, frame, logo, logo2, logo3 };

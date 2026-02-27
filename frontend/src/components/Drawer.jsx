@@ -38,7 +38,7 @@ const Drawer = ({ drawerOpen, setDrawerOpen }) => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, scale: 0 }}
                 transition={{ duration: 0.1,visualDuration:0.2}}
-                className={` duration-300 transition-all ${drawerOpen ? "" : "-translate-x-400"} md:w-[30%] w-[70%] flex justify-center items-center bg-white px-5 rounded-tr-3xl `}>
+                className={` duration-300 transition-all ${drawerOpen ? "" : "-translate-x-400"} md:w-[40vw] w-[70vw] flex justify-center items-center bg-white px-5 rounded-tr-3xl `}>
 
                 <motion.div
                     onClick={(e) => e.stopPropagation()}
@@ -58,7 +58,7 @@ const Drawer = ({ drawerOpen, setDrawerOpen }) => {
                 initial={{ opacity: 0, x: -250 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.1}}
-                className={` text-black/65 rounded-br-3xl md:text-lg duration-300 transition-all ${drawerOpen ? "" : "-translate-x-400"} flex gap-3 px-2 py-4 flex-col justify-start items-start md:w-[30%] w-[70%] h-[95%] bg-white`}>
+                className={` text-black/65 rounded-br-3xl md:text-lg duration-300 transition-all ${drawerOpen ? "" : "-translate-x-400"} flex gap-3 px-2 py-4 flex-col justify-start items-start md:w-[40vw] w-[70vw] h-[95%] bg-white`}>
                 {nav.map((page, index) => {
                     return (<Link key={index} onClick={() => setDrawerOpen(!drawerOpen)} to={`${allowedRoutes[index]}`} className="w-full my-2 mx-4 flex items-center"><span className="text-black/65 px-1 pr-3">{page.icon}</span>{page.name}</Link>)
                 })}

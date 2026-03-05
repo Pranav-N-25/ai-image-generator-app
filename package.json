@@ -23,6 +23,7 @@
   "dependencies": {
     "@clerk/clerk-react": "^5.46.0",
     "@fontsource/poppins": "^5.2.7",
+    "@heyputer/puter.js": "^2.2.10",
     "@uiw/react-color": "^2.9.2",
     "framer-motion": "^12.23.26",
     "lucide-react": "^0.562.0",

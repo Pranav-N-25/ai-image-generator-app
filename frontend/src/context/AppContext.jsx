@@ -11,6 +11,7 @@ export const useAppContext = () => {  // for providing
 
 
 export const AppContextProvider = ({ children }) => { //for wrapping the app
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
   const { user, isSignedIn } = useUser();
   const [chat, setChats] = React.useState([]);
   const [messages, setMessages] = React.useState([]);
@@ -47,6 +48,8 @@ export const AppContextProvider = ({ children }) => { //for wrapping the app
     setMessages,
     getToken,
     isMobile,
+    drawerOpen,
+    setDrawerOpen
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

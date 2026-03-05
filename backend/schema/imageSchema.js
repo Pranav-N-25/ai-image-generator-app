@@ -5,6 +5,14 @@ const imageSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    emailId: {
+        type: String,
+        required: true
+    },
+    cloudinary_image_public_id: {
+        type: String,
+        required: true
+    },
     imageName: {
         type: String,
         required: true
@@ -12,7 +20,7 @@ const imageSchema = new mongoose.Schema({
     imageUrl: {
         type: String,
         required: true
-    },
+    }
 }, {
     timestamps: true,
 });

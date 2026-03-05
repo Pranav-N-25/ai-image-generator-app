@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'; // Standard 2026 icon 
 import homeNavBar from '../components/homeNavBar';
 import { useMediaQuery } from "react-responsive";
 import { FaArrowCircleLeft, FaArrowCircleRight } from "react-icons/fa";
-import { FaChevronLeft,FaChevronRight } from "react-icons/fa6";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { carouselSlides } from '../assets';
 
 
@@ -102,9 +102,9 @@ export function Home() {
   };
 
   return (
-    <div className="w-full flex  justify-center relative h-[90%] md:h-[86%] my-1 py-auto flex-col /h-[87.2vh] items-center /backdrop-blur-3xl  ">
+    <div className="w-full flex  justify-center relative h-[85%] md:h-[86%] my-1 py-auto flex-col /h-[87.2vh] items-center /backdrop-blur-3xl  ">
       <div ref={carouselRef} onScroll={onScroll} className=" snap-container  carousel w-[99%] flex gap-4 h-zzz overflow-x-scroll scroll-smooth overflow-y-visible snap-x snap-mandatory rounded-4xl">
-       
+
         {sildeTextRef && buttonRef == 1 &&
           <>
 
@@ -114,7 +114,7 @@ export function Home() {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: .3 }}
             >
-              <FaChevronLeft className={`w-10 h-10 text-white/85 bg-white/55 p-2.5 rounded-4xl`} onClick={() => { scroll(-1000); console.log("buttonRef :" + buttonRef); setButtonRef(0); setTimeout(() => { setButtonRef(1); console.log("buttonRef :" + buttonRef) }, 500); }} />
+              <FaChevronLeft className={`w-10 h-10 text-white/85 bg-white/55 p-2.5 rounded-4xl`} onClick={() => { scroll(-1000); setButtonRef(0); setTimeout(() => { setButtonRef(1); }, 500); }} /> {/*console.log("buttonRef :" + buttonRef); console.log("buttonRef :" + buttonRef)*/}
             </motion.div>
 
             <motion.div
@@ -123,9 +123,9 @@ export function Home() {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: .3 }}
             >
-              <FaChevronRight className={`w-10 h-10 text-white/85 bg-white/55 p-2.5 rounded-4xl`} onClick={() => { scroll(1000); console.log("buttonRef :" + buttonRef); setButtonRef(0); setTimeout(() => { setButtonRef(1); console.log("buttonRef : " + buttonRef) }, 500); }} />
+              <FaChevronRight className={`w-10 h-10 text-white/85 bg-white/55 p-2.5 rounded-4xl`} onClick={() => { scroll(1000); setButtonRef(0); setTimeout(() => { setButtonRef(1); }, 500); }} />
             </motion.div>
-            </>
+          </>
         }
 
         <motion.img src={isMobile ? _slide1 : slide1} initial={{ opacity: 0.8, scale: isMobile ? 0.8 : buttonRef == 1 ? 0.6 : .3, y: 0, x: 0 }} whileInView={{ opacity: 2, scale: 1, y: 0, x: 0 }} viewport={{ once: false }} transition={{ duration: isMobile ? .5 : buttonRef == 1 ? .3 : .5, visualDuration: isMobile ? 0.2 : 0.15 }} className={`carousel-item snap-center snap-item h-full md:h-[101%] shrink-0 w-full md:w-full lg:w-[101%] /bg-blue-500 rounded-4xl`} />
@@ -151,13 +151,13 @@ export function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: .5 }}
-          className="flex duration-200 bottom-0 md:h-[40%] h-[30%] absolute w-[99%] bg-linear-to-b to-black/88 rounded-4xl mx-5 ">
+          className="flex duration-200 bottom-0 md:h-[40%] h-[40%] absolute w-[99%] bg-linear-to-b to-black/88 rounded-4xl mx-5 ">
           <div className=" flex-col pt-8 ">
-            <div className="text-5xl font-extrabold px-10 text-white mx-2 mb-3 ">{slideText[active].ImageType}</div>
+            <div className="text-5xl font-extrabold px-10 text-white mx-2 mb-3  ">{slideText[active].ImageType}</div>
             <div className="text-2xl font-light px-10 text-white/83 mx-2 ">{slideText[active].Subtitle}</div>
           </div>
         </motion.div>
-:"":""
+        : "" : ""
       }
 
     </div >

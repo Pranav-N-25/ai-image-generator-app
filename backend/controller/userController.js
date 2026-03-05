@@ -1,5 +1,18 @@
 const User = require("../schema/userschema.js");
+const Image = require("../schema/imageSchema.js");
 const { Webhook } = require("svix");
+const cloudinary = require("cloudinary");
+
+dotenv.config();
+
+cloudinary.v2.config(
+    {
+        cloud_name: process.env.CLOUDINARY_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET
+    }
+)
+
 
 // Clerk webhook handler
 const clerkWebhookHandler = async (req, res) => {
@@ -19,11 +32,11 @@ const clerkWebhookHandler = async (req, res) => {
       case "user.created":
         await User.create({
           _id: data.id,
-          name: `${data.first_name || ""} ${data.last_name || ""}`.trim(),
+          username: `${data.first_name || ""} ${data.last_name || ""}`.trim(),
           email: data.email_addresses?.[0]?.email_address || "",
-          image: data.profile_image_url || "",
+          userImageUrl: data.profile_image_url || "",
         });
-        console.log("Data : "+data);
+        console.log("Data : " + data);
         console.log("User created via webhook:", data.id);
         break;
 
@@ -31,8 +44,10 @@ const clerkWebhookHandler = async (req, res) => {
         await User.findByIdAndUpdate(
           data.id,
           {
-            name: `${data.first_name || ""} ${data.last_name || ""}`.trim(),
+            _id: data.id,
+            username: `${data.first_name || ""} ${data.last_name || ""}`.trim(),
             email: data.email_addresses?.[0]?.email_address || "",
+            userImageUrl: data.profile_image_url || "",
           },
           { new: true }
         );
@@ -40,7 +55,15 @@ const clerkWebhookHandler = async (req, res) => {
         break;
 
       case "user.deleted":
-        await User.findByIdAndDelete(data.id);
+        const userId = data.id;
+
+        await User.findByIdAndDelete({ _id: userId });
+
+        const publicIds = await Image.find({ userId }, { cloudinary_image_public_id: 1, _id: 0 });
+        const publicIdArray = [...publicIds.map((id) => id.cloudinary_image_public_id)];
+
+        const result = await cloudinary.api.delete_resources(publicIdArray); console.log("Deleted:", result);
+
         console.log("User deleted via webhook:", data.id);
         break;
 
@@ -51,7 +74,7 @@ const clerkWebhookHandler = async (req, res) => {
     res.status(200).json({ message: "Webhook processed" });
   } catch (error) {
     console.error("Webhook error:", error);
-    res.status(400).json({ error: "Invalid webhook "+ data });
+    res.status(400).json({ error: "Invalid webhook " + data });
   }
 };
 

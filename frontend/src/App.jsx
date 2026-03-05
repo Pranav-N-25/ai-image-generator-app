@@ -5,10 +5,14 @@ import { Routes, Route } from "react-router-dom";
 import { Pages } from "./pages/Index";
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
-// import { AIImageGeneratedURL, MyImageGenerator } from "./pages/ImgGenerator";
+import { useAppContext } from "./context/AppContext.jsx";
+
 const App = () => {
+
+  const { drawerOpen } = useAppContext();
+
   return (
-    <div className="w-full h-screen bg-white/43 overflow-y-auto backdrop-blur-3xl">
+    <div className={` relative w-full  ${drawerOpen ? "overflow-y-hidden" : ""} h-screen bg-white/50 overflow-y-auto backdrop-blur-3xl `}>
       <NavBar />
       <Routes>
         <Route exact path="/" element={Pages.Home} />
@@ -18,6 +22,7 @@ const App = () => {
         <Route path="/about" element={Pages.About} />
       </Routes>
       <Footer />
+
     </div>
   );
 };

@@ -7,6 +7,13 @@
   }
 }
 
+@font-face {
+  font-family: 'Poppins';
+  src: url('/fonts/Poppins-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 @theme {
   --color-bluepink-1: #2d00f7;
   --color-bluepink-2: #6a00f4;
@@ -110,10 +117,10 @@ body {
   height: 300px; */
   /* border-radius: 20px; */
   /* background: radial-gradient(circle at top left, #fbff00, #ff0000); */
-  background: radial-gradient(circle at top left, #ffffff, #ff0000);
+  background: radial-gradient(circle at top left, #fff200, #ff00d9);
   /* box-shadow: 0 0 30px rgba(251, 255,3), 0 0 80px rgba(255, 0, 3), 0 0 880px rgb(255, 0, 242); */
-  animation: auroraGlow 7s ease-in-out infinite;
-  transition: transform 1.6s ease;
+  animation: auroraGlow 3.5s ease-in-out infinite;
+  transition: transform 7.6s ease;
 }
 
 
@@ -235,7 +242,7 @@ body {
   height: 300px; */
   /* border-radius: 20px; */
   background: radial-gradient(circle at top left, #ffef09, #ff0000);
-    /* background: radial-gradient(circle at top left, #00ffe0, #8a00ff); */
+  /* background: radial-gradient(circle at top left, #00ffe0, #8a00ff); */
   box-shadow: 0 0 30px rgba(251, 255, 0, 0.3), 0 0 80px rgba(255, 0, 0, 0.3);
   animation: auroraGlow 6s ease-in-out infinite;
   transition: transform 0.3s ease;
@@ -246,15 +253,20 @@ body {
 } */
 
 @keyframes auroraGlow {
-  0%, 100% {
+
+  0%,
+  100% {
     filter: hue-rotate(0deg);
   }
+
   25% {
     filter: hue-rotate(-80deg);
   }
+
   75% {
     filter: hue-rotate(-100deg);
   }
+
   50% {
     filter: hue-rotate(-130deg);
   }

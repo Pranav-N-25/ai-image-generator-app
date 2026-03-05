@@ -2,7 +2,7 @@ import React from "react";
 
 const Button = ({ value, setValue }) => {
   {
-    console.log(value);
+    // console.log(value);
   }
   return (
     <div

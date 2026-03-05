@@ -6,13 +6,15 @@ import MediaQuery from "react-responsive";
 import OpenRouter from "../config/OpenRouter.jsx";
 import GA from '../assets/logo-ai.webp'
 import GA_prompt from '../assets/logo-ai.webp'
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Sketch, Wheel } from '@uiw/react-color';
 import { RiColorFilterAiLine } from "react-icons/ri";
 import Resizer from "react-image-file-resizer";
 import puter from "@heyputer/puter.js";
 import { useAppContext } from "../context/AppContext.jsx";
-
+import axios from "axios";
+import credit from "../assets/creditPoint.webp";
+import creditLock from "../assets/coinIcon.png";
 // import { usePollinationsImage } from "@pollinations/react";
 // const modelList = [
 //   { label: "Gemma 3B", value: "google/gemma-3-27b-it:free" },
@@ -22,13 +24,14 @@ import { useAppContext } from "../context/AppContext.jsx";
 //   { label: "Deepcoder 14B", value: "agentica-org/deepcoder-14b-preview:free" },
 // ];
 
+
+
 const PromptBox = ({
   button,
   setButton,
   Prompt,
   setPrompt,
   setSubmit,
-  // setResponse,
   setLoading,
   submit,
   loading,
@@ -46,8 +49,21 @@ const PromptBox = ({
   isTab4,
   isMobile,
   fileName,
-  setFilename
+  setFilename,
+  tiggedSignInButton,
+  setTriggedSignInButton
 }) => {
+
+  const [userCredits, setUserCredits] = useState(null);
+
+  const PuterLoginStatus = puter.auth.isSignedIn();
+
+  const userDetails = async () => {
+    const response = await puter.auth.getMonthlyUsage();
+    setUserCredits(response.allowanceInfo);
+  }
+
+  useEffect(() => { if (PuterLoginStatus) { userDetails(); } }, [imageUrl]);
 
   const icons = {
     "google":
@@ -105,14 +121,30 @@ const PromptBox = ({
       width={25}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      stroke-width="1.5"
-      class="h-6 w-6"
+      strokeWidth="1.5"
+      className="h-6 w-6"
       viewBox="-0.17090198558635983 0.482230148717937 41.14235318283891 40.0339509076386">
       <text x="-9999" y="-9999">ChatGPT</text>
       <path
         d="M37.532 16.87a9.963 9.963 0 0 0-.856-8.184 10.078 10.078 0 0 0-10.855-4.835A9.964 9.964 0 0 0 18.306.5a10.079 10.079 0 0 0-9.614 6.977 9.967 9.967 0 0 0-6.664 4.834 10.08 10.08 0 0 0 1.24 11.817 9.965 9.965 0 0 0 .856 8.185 10.079 10.079 0 0 0 10.855 4.835 9.965 9.965 0 0 0 7.516 3.35 10.078 10.078 0 0 0 9.617-6.981 9.967 9.967 0 0 0 6.663-4.834 10.079 10.079 0 0 0-1.243-11.813zM22.498 37.886a7.474 7.474 0 0 1-4.799-1.735c.061-.033.168-.091.237-.134l7.964-4.6a1.294 1.294 0 0 0 .655-1.134V19.054l3.366 1.944a.12.12 0 0 1 .066.092v9.299a7.505 7.505 0 0 1-7.49 7.496zM6.392 31.006a7.471 7.471 0 0 1-.894-5.023c.06.036.162.099.237.141l7.964 4.6a1.297 1.297 0 0 0 1.308 0l9.724-5.614v3.888a.12.12 0 0 1-.048.103l-8.051 4.649a7.504 7.504 0 0 1-10.24-2.744zM4.297 13.62A7.469 7.469 0 0 1 8.2 10.333c0 .068-.004.19-.004.274v9.201a1.294 1.294 0 0 0 .654 1.132l9.723 5.614-3.366 1.944a.12.12 0 0 1-.114.01L7.04 23.856a7.504 7.504 0 0 1-2.743-10.237zm27.658 6.437l-9.724-5.615 3.367-1.943a.121.121 0 0 1 .113-.01l8.052 4.648a7.498 7.498 0 0 1-1.158 13.528v-9.476a1.293 1.293 0 0 0-.65-1.132zm3.35-5.043c-.059-.037-.162-.099-.236-.141l-7.965-4.6a1.298 1.298 0 0 0-1.308 0l-9.723 5.614v-3.888a.12.12 0 0 1 .048-.103l8.05-4.645a7.497 7.497 0 0 1 11.135 7.763zm-21.063 6.929l-3.367-1.944a.12.12 0 0 1-.065-.092v-9.299a7.497 7.497 0 0 1 12.293-5.756 6.94 6.94 0 0 0-.236.134l-7.965 4.6a1.294 1.294 0 0 0-.654 1.132l-.006 11.225zm1.829-3.943l4.33-2.501 4.332 2.5v5l-4.331 2.5-4.331-2.5V18z"
         fill="#f56565" />
     </svg>
+    ,
+    "flux": <svg
+      fill="currentColor"
+      fillRule="evenodd"
+      height="1em"
+      viewBox="0 0 24 24"
+      width={25}
+      className="h-6 w-6"
+
+      xmlns="http://www.w3.org/2000/svg" >
+      <title>Flux</title>
+      <path d="M0 20.683L12.01 2.5 24 20.683h-2.233L12.009 5.878 3.471 18.806h12.122l1.239 1.877H0z" fill="#f56565">
+      </path>
+      <path d="M8.069 16.724l2.073-3.115 2.074 3.115H8.069zM18.24 20.683l-5.668-8.707h2.177l5.686 8.707h-2.196zM19.74 11.676l2.13-3.19 2.13 3.19h-4.26z">
+      </path>
+    </svg >
   }
 
 
@@ -122,9 +154,12 @@ const PromptBox = ({
     { label: "DALL-E 3", value: "dall-e-3", icon: icons.gpt },
     { label: "GPT Image 1.5", value: "gpt-image-1.5", icon: icons.gpt },
     { label: "GPT Image 1 Mini", value: "gpt-image-1-mini", icon: icons.gpt },
-    { label: "Stable Diffusion 3", value: "stable-diffusion-3", icon: icons.stable },
-    { label: "Stable Diffusion XL (SDXL)", value: "stable-diffusion-xl", icon: icons.stable },
+    { label: "Stable Diffusion 3", value: "stability-ai/stable-diffusion-3", icon: icons.stable },
+    { label: "Stable Diffusion XL (SDXL)", value: "stability-ai/stable-diffusion-xl", icon: icons.stable },
     { label: "Grok 2 Image", value: "grok-2-image", icon: icons.grok },
+    { label: "Flux 1.1 Pro", value: "black-forest-labs/flux-1.1-pro", icon: icons.flux },
+    { label: "Flux.1 Kontext", value: "black-forest-labs/flux-1-kontext", icon: icons.flux },
+    { label: "Flux.1 Schnell", value: "black-forest-labs/flux-1-schnell", icon: icons.flux }
   ];
 
   const resolution = [
@@ -135,7 +170,7 @@ const PromptBox = ({
     { label: "16:9", w: 1280, h: 720 },
   ]
 
-  const { id, api } = useAppContext();
+  const { id, email } = useAppContext();
   const [input, setInput] = useState("");
   const [input2, setInput2] = useState("");
 
@@ -156,8 +191,8 @@ const PromptBox = ({
     );
 
     const data = await response.json();
-    // console.log(data);
-    const img_upload_res = await api.post("/api/image", { imageName: `${data.display_name}.png`, userId: id, imageUrl: data.secure_url });
+    console.log(data);
+    const img_upload_res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/image`, { imageName: `${data.display_name}.png`, userId: id, imageUrl: data.secure_url, cloudinary_image_public_id: data.public_id, emailId: email });
     setFilename(data.imageName);
     console.log(img_upload_res);
     return data.secure_url; // Retrieve the final URL
@@ -215,57 +250,68 @@ const PromptBox = ({
 
 
   const GenerateImage = async () => {
-    // if (Prompt.trim() === "") { return }
-    setLoading(true);
-    setImageUrl(null);
-    setError(null);
-    setInput(null);
-    setInput2(null);
-    try {
+
+    if (id) {
+      setButton(true);
+      setLoading(true);
+      setImageUrl(null);
+      setError(null);
+      setInput(null);
+      setInput2(null);
 
 
-      if (!window.puter) { console.log("Image is not Loaded ! "); }
-      console.log("prompt :" + Prompt);
-      setInput((selected ? ", and style of the image is * " + selected : "") + (on ? " with Image Color Scheme " + colour : "") + (imageResolution.w === "auto" ? "" : ", and encode the aspect ratio of image with " + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image"))
+      try {
 
 
-      // if (Prompt && selected) {
-      //   if (imageResolution.h === "auto") { setInput(Prompt + ", and style of the image is *" + selected); }
-      //   else { setInput(Prompt + ", and style of the image is *" + selected + ", and encode the aspect ratio of image with" + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image"); }
-      // }
-      // else {
-      //   if (imageResolution.h === "auto") { setInput(Prompt); }
-      //   else { setInput(Prompt + ", and encode the aspect ratio of image with" + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image"); }
-      // }
+        if (!window.puter) { console.log("Image is not Loaded ! "); }
+        // console.log("prompt :" + Prompt);
+        setInput((selected ? ", and style of the image is * " + selected : "") + (on ? " with Image Color Scheme " + colour : "") + (imageResolution.w === "auto" ? "" : ", and encode the aspect ratio of image with " + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image"))
 
-      // setInput2(input + (on ? (" The Image Color style is " + colour) : ("")));
 
-      // console.log("Input : " + input + "\n Colour Toggle : " + on + "\n Colour :" + colour);
-      console.log("Width : " + imageResolution.w + " Height : " + imageResolution.h, "Selected Model : " + selectedModel.value + "\n Input : " + (Prompt + input));
-      const imageElement = await puter.ai.txt2img((Prompt + input), { model: selectedModel.value }); //puter.ai.txt2img("A peaceful mountain landscape at sunset", { model: "gemini-2.5-flash-image-preview" });
-      setInput2((Prompt + input));
-      if (id) {
-        const CloudinaryImageUrl = await uploadImage(imageElement);
-        console.log(CloudinaryImageUrl ? "Upload Successfull : " + CloudinaryImageUrl : " Upload is not performed");
+        // if (Prompt && selected) {
+        //   if (imageResolution.h === "auto") { setInput(Prompt + ", and style of the image is *" + selected); }
+        //   else { setInput(Prompt + ", and style of the image is *" + selected + ", and encode the aspect ratio of image with" + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image"); }
+        // }
+        // else {
+        //   if (imageResolution.h === "auto") { setInput(Prompt); }
+        //   else { setInput(Prompt + ", and encode the aspect ratio of image with" + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image"); }
+        // }
 
+        // setInput2(input + (on ? (" The Image Color style is " + colour) : ("")));
+
+        // console.log("Input : " + input + "\n Colour Toggle : " + on + "\n Colour :" + colour);
+        // console.log("Width : " + imageResolution.w + " Height : " + imageResolution.h, "Selected Model : " + selectedModel.value + "\n Input : " + (Prompt + input));
+
+        // {!PuterLoginStatus && }
+
+        const imageElement = await puter.ai.txt2img((Prompt + input), { model: selectedModel.value }); //puter.ai.txt2img("A peaceful mountain landscape at sunset", { model: "gemini-2.5-flash-image-preview" });
+        setInput2((Prompt + input));
+        if (id) {
+          const CloudinaryImageUrl = await uploadImage(imageElement);
+          // console.log(CloudinaryImageUrl ? "Upload Successfull : " + CloudinaryImageUrl : " Upload is not performed");
+
+        }
+        setImageUrl(imageElement);
+
+
+        setSubmit(false);
+        setLoading(false);
+        // uploadImage(imageElement);
       }
-      setImageUrl(imageElement);
 
+      catch (error) {
+        setLoading(false);
+        setSubmit(false);
+        setError(
+          { "Status": error.error.status, "Code": error.error.code, "Message": error.error.message, });
+        // console.log(error);
+      }
 
-      setSubmit(false);
-      setLoading(false);
-      // uploadImage(imageElement);
     }
 
-    catch (error) {
-      setLoading(false);
-      setSubmit(false);
-      setError(
-        {"Status":error.error.status,"Code":error.error.code , "Message":error.error.message,});
-      console.log(error);
+    else {
+      setTriggedSignInButton(true);
     }
-
-
     // if (imageElement) { console.log(imageElement); setLoading(false) }
 
   }
@@ -303,9 +349,8 @@ const PromptBox = ({
             if (e.key === "Enter" && !e.shiftKey && Prompt.trim() !== "") {
 
               e.preventDefault(); // Prevent default Enter key behavior
-              setButton(true);
-              setLoading(true);
-              setSubmit(true);
+              // setLoading(true);
+              // setSubmit(true);
               setPrompt(e.target.value);
               GenerateImage();
 
@@ -327,37 +372,46 @@ const PromptBox = ({
 
 
 
-        <div className={`flex flex-wrap h-auto justify-center items-center md:mb-3 ${isMobile ? "mb-4" : ""}`}>
-          <div
-            className={`${isTab ? "mb-10 " : "flex mt-5"} ${isMobile ? "mb-16" : ""} justify-center items-center  w-full h-5 md:8`}>
-            {Image_Type.map((type, index) => {
-              return (<ul key={index} className='inline-block select-none'>
-                <motion.li initial={{ opacity: 0, scale: 0, y: -30 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  viewport={{ once: true }} // Ensures animation runs only once
-                  exit={{ opacity: 0, scale: 0, y: -300 }}
-                  transition={{ bounce: 0.25, visualDuration: 0.2, duration: 0.2 }}
-                  onClick={() => { selected == Image_Type[index] ? setSelected(null) : setSelected(type) }}
-                  className={`my-2 m-2 border rounded-2xl px-3 border-gray-500/46 duration-300 text-gray-600/68 ${selected == type ? "border-red-500/66 text-red-600/88 bg-red-300/35" : ""} text-sm py-1 cursor-pointer`}>{type}</motion.li>
-              </ul>)
-            })}
+        <div className={` `}>
+          <div className="flex flex-wrap justify-center items-center">
+            {
+              Image_Type.map((type, index) => {
+                return (
+                  <motion.div key={index} initial={{ opacity: 0, scale: 0, y: -30 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    viewport={{ once: true }} // Ensures animation runs only once
+                    exit={{ opacity: 0, scale: 0, y: -300 }}
+                    transition={{ bounce: 0.25, visualDuration: 0.2, duration: 0.2 }}
+                    onClick={() => { selected == Image_Type[index] ? setSelected(null) : setSelected(type) }}
+                    className={` select-none my-2 m-2 h-fit border rounded-2xl px-3 border-gray-500/46 duration-300 text-gray-600/68 ${selected == type ? "border-red-500/66 text-red-600/88 bg-red-300/35" : ""} text-sm py-1 cursor-pointer`}>{type}</motion.div>
+                )
+              })
+            }
+
+            {
+              PuterLoginStatus && userCredits && id &&
+              <motion.div
+                initial={{ opacity: 0, scale: 0, y: -10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true }} // Ensures animation runs only once
+                exit={{ opacity: 0, scale: 0 }}
+                transition={{ bounce: 0.25, visualDuration: 0.2, duration: 0.2 }}
+                className={`text-sm cursor-default font-bold hover:bg-linear-to-r py-2 px-3 rounded-4xl border m-2 ${(Math.round(userCredits.remaining) / 1000000) < 10 ? "bg-red-300/35 text-red-600/88 border-red-500/66" : "bg-green-300/35 text-green-600/88 border-green-500/66"} transition duration-300 `}>
+                <span className="flex justify-center items-center w-full"> <img src={userCredits ? credit : creditLock} className="w-5 h-5 mr-2 inline-block" /> {userCredits ? `${Math.round(userCredits.remaining / 1000000)} / ${userCredits.monthUsageAllowance / 1000000}` : "Credits will be allocated after Initial Request from puter.js "}</span>
+              </motion.div>
+            }
           </div>
 
 
 
 
-
-          <div className={`flex justify-center items-center w-full mt-2  ${isTab3 ? " mb-12" : "flex"} ${isTab2 ? "mb-16" : ""} ${isMobile ? "mb-23" : ""}`}>
-
-
-
-            <div className={`h-5 relative flex flex-wrap md:mb-6 md:mt-3 justify-center items-center`}>
+          <div className={`flex justify-center items-center w-full `}>
+            <div className={` relative flex flex-wrap justify-center items-center `}>
 
               {
-
                 resolution.map((size, index) => {
                   return (
-                    <ul key={index} className=" inline-block  ">
+                    <ul key={index} className=" inline-block ">
                       <motion.li
                         initial={{ opacity: 0, scale: 0, y: -30 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -400,36 +454,38 @@ const PromptBox = ({
                     {isTab4 ? null : "Color"}
                   </span>
                 </div>
-                {openColorPicker &&
-                  <motion.div
-                    initial={{ opacity: 0, y: isMobile ? -340 : -330, x: -22 }}
-                    animate={{ opacity: 1, y: isMobile ? -348 : -345 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    viewport={{ once: true }} // Ensures animation runs only once
-                    transition={{ type: "spring", bounce: 0.25, visualDuration: 0.1, duration: 0.15 }}
-                    className={`absolute duration-400  translate-y-9 md:-translate-y-3 md:-translate-x-14 -translate-x-10 rounded-3xl`}>
-                    <Sketch color={colour} onChange={(newColor) => setColour(newColor.hex)} width={253} />
-                    {console.log(colour)}
-                    <div>    <button
-                      className={`cursor-pointer absolute bottom-0 right-0 m-1 rounded-full flex w-10 h-6 ${on ? "bg-red-200/55" : "bg-gray-200/85"} items-center `}
-                      onClick={() => isOn(!on)}
-                    >
-                      {/*motion.*/}<div
-                        className={`${on ? "translate-x-4.5 bg-red-500/45" : "translate-x-0.5 bg-gray-400/55"} rounded-full flex duration-200 transition-all  w-5 h-5`}
-                      // layout
-                      // initial={false}
-                      // animate={{ opacity: 1, }}
-                      // transition={{
-                      //   x: 0, y: 0, type: "string", visualDuration: 0.2, duration: 0.2
-                      // }}
-                      />
-                    </button></div>
-                    <div className={`absolute right-12 text-sm bottom-2 bg-linear-to-r ${on ? "from-red-500 to-yellow-300 duration-500 transition-all bg-clip-text text-transparent" : "text-gray-400"}`}>Apply</div>
+                <AnimatePresence>
+                  {openColorPicker &&
+                    <motion.div
+                      initial={{ opacity: 0, y: isMobile ? -340 : -330, x: -22 }}
+                      animate={{ opacity: 1, y: isMobile ? -348 : -345 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      viewport={{ once: true }} // Ensures animation runs only once
+                      transition={{ type: "spring", bounce: 0.25, visualDuration: 0.1, duration: 0.15 }}
+                      className={`absolute duration-400  translate-y-9 md:-translate-y-3 md:-translate-x-14 -translate-x-10 rounded-3xl`}>
+                      <Sketch color={colour} onChange={(newColor) => setColour(newColor.hex)} width={253} />
+                      {/* {console.log(colour)} */}
+                      <div>
+                        <button
+                          className={`cursor-pointer absolute bottom-0 right-0 m-1 rounded-full flex w-10 h-6 ${on ? "bg-red-200/55" : "bg-gray-200/85"} items-center `}
+                          onClick={() => isOn(!on)}
+                        >
+                          {/*motion.*/}<div
+                            className={`${on ? "translate-x-4.5 bg-red-500/45" : "translate-x-0.5 bg-gray-400/55"} rounded-full flex duration-200 transition-all  w-5 h-5`}
+                          // layout
+                          // initial={false}
+                          // animate={{ opacity: 1, }}
+                          // transition={{
+                          //   x: 0, y: 0, type: "string", visualDuration: 0.2, duration: 0.2
+                          // }}
+                          />
+                        </button></div>
+                      <div className={`absolute right-12 text-sm bottom-2 bg-linear-to-r ${on ? "from-red-500 to-yellow-300 duration-500 transition-all bg-clip-text text-transparent" : "text-gray-400"}`}>Apply</div>
 
 
-                  </motion.div>
-                }
-
+                    </motion.div>
+                  }
+                </AnimatePresence>
               </motion.div>
             </div>
 
@@ -473,6 +529,7 @@ const PromptBox = ({
               }`}
           >
 
+
           </div>
           <motion.button
             initial={{ opacity: 0, x: -60 }}
@@ -494,39 +551,43 @@ const PromptBox = ({
               className={`text-xs text-red-500/53 ${showMenu && "rotate-180"} duration-500`}
 
             />
-            {showMenu ? (
-              <motion.ul
-                initial={{ opacity: 0, y: -43, x: 165 }}
-                animate={{ opacity: 1, y: -58, x: 165 }}
-                exit={{ opacity: 0, scale: 0, y: 30 }}
-                viewport={{ once: true }} // Ensures animation runs only once
-                transition={{ type: "spring", bounce: 0.3, visualDuration: 0, duration: 0.01 }}
-                className={`${showMenu && "md:-translate-y-38 md:translate-x-1.5 -translate-x-43 -translate-y-40"}
+            <AnimatePresence>
+              {showMenu &&
+                <motion.ul
+                  key="modelsList"
+                  initial={{ opacity: 0, y: -103, x: 165 }}
+                  animate={{ opacity: 1, y: -113, x: 165 }}
+                  exit={{ opacity: 1, y: -100, x: 165 }}
+                  viewport={{ once: true }} // Ensures animation runs only once
+                  transition={{ type: "easeInOut", visualDuration: 0.1, duration: 0.2 }}
+                  className={`${showMenu && "md:-translate-y-38 md:translate-x-1.5 -translate-x-43 -translate-y-40"}
                   absolute -left-25 duration-500 transition-all z-1
                    -mx-15 mb-5 w-68 text-left bg-white border-black/15 border rounded-xl shadow-lg `}
-              >
-                <li className="px-4 py-2 flex justify-center items-center rounded-t-xl border-b-2 bg-red-500 font-extrabold text-white">
-                  Models
-                </li>
-                {modelList.map((model, index) => (
-                  <li
-                    key={model.value}
-                    className={`px-2 py-2 cursor-pointer  hover:bg-gray-100 
+                >
+                  <li className="px-4 py-2 flex justify-center items-center rounded-t-xl border-b-2 bg-red-500 font-extrabold text-white">
+                    Models
+                  </li>
+                  {modelList.map((model, index) => (
+                    <li
+                      key={model.value}
+                      className={`px-2 py-2 cursor-pointer  hover:bg-gray-100 
                       ${index === modelList.length - 1 ? "rounded-b-xl" : ""}
                       ${selectedModel.value === model.value
-                        ? "bg-red-300/25 hover:bg-red-300/25 text-red-500 "
-                        : ""
-                      }`}
-                    onClick={() => {
-                      setSelectedModel(model);
-                      setShowMenu(false);
-                    }}
-                  >
-                    <span className="flex gap-2 ">{model.icon}{model.label}</span>
-                  </li>
-                ))}
-              </motion.ul>
-            ) : null}
+                          ? "bg-red-300/25 hover:bg-red-300/25 text-red-500 "
+                          : ""
+                        }`}
+                      onClick={() => {
+                        setSelectedModel(model);
+                        setShowMenu(false);
+                      }}
+                    >
+                      <span className="flex gap-2 ">{model.icon}{model.label}</span>
+                    </li>
+                  ))}
+                </motion.ul>
+              }
+            </AnimatePresence>
+
           </motion.button>
 
           <motion.div
@@ -543,9 +604,9 @@ const PromptBox = ({
           duration-500 flex shrink-0 justify-center items-center rounded-full md:h-13 md:w-13 h-12 w-12`}
             onClick={() => {
               if (!loading && Prompt.trim() !== "") {
-                setButton(true);
-                setLoading(true);
-                setSubmit(true);
+                // setButton(true);
+                // setLoading(true);
+                // setSubmit(true);
                 GenerateImage();
 
               }

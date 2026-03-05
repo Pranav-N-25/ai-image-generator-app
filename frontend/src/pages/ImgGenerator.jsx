@@ -1,34 +1,39 @@
 import React from "react";
-// import { usePollinationsImage } from "@pollinations/react";
-import PromptBox from "../components/PromptBox";
+import { useMediaQuery } from "react-responsive";
+import { imageFileResizer } from "react-image-file-resizer";
+import { motion, AnimatePresence } from "framer-motion";
+import { useUser, SignInButton } from "@clerk/clerk-react";
+import { IoIosClose } from "react-icons/io";
+
+import logo from '../assets/logo-ai.webp';
 import LoadingFrame from "../assets/LoadingFrame.gif";
 import ImageLoading from "../assets/Image-loading.webp";
-import { FaDownload } from "react-icons/fa";
-import logo from '../assets/logo-ai.webp';
-import { motion, AnimatePresence } from "framer-motion";
-import { imageFileResizer } from "react-image-file-resizer";
-import { useMediaQuery } from "react-responsive";
 import animatedLogo from "../assets/animation-lottie.gif";
 
+import { FaDownload, FaArrowRight } from "react-icons/fa";
+
+import PromptBox from "../components/PromptBox";
 
 export const ImageGen = () => {
   // Pass your prompt to the hook
+  const { user } = useUser();
   const [Prompt, setPrompt] = React.useState("");
   const [imageUrl, setImageUrl] = React.useState("");
+  const [tiggedSignInButton, setTriggedSignInButton] = React.useState(false);
   const [resizedUrl, setResizedUrl] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [submit, setSubmit] = React.useState(false);
   const [button, setButton] = React.useState(false);
   const [error, setError] = React.useState();
   const [fileName, setFilename] = React.useState(null);
+  const signInButtonRef = React.useRef();
   const [imageResolution, setImageResolution] = React.useState({ label: "default", w: "auto", h: "auto" });
   const isTab = useMediaQuery({ maxWidth: 1111 });
   const isTab2 = useMediaQuery({ maxWidth: 1332 });
   const isTab3 = useMediaQuery({ maxWidth: 1173 });
   const isTab4 = useMediaQuery({ maxWidth: 501 });
   const isMobile = useMediaQuery({ maxWidth: 597 });
-  const Image_Type = ['Anime', 'Realistic', 'Cinematic', '3D', 'Painting', 'Ghibli']
-
+  const Image_Type = ['Anime', 'Realistic', 'Cinematic', '3D', 'Painting', 'Ghibli'];
   var l = loading;
 
   const handleDownload = () => {
@@ -55,11 +60,35 @@ export const ImageGen = () => {
     };
   };
 
-  return (
-    <>
 
-      <motion.div style={{ textAlign: "center" }} className="flex md:my-[2%] justify-center items-center" >
+  const useClickOutside = (ref, callback) => {
+    React.useEffect(() => {
+      const handleClick = (event) => {
+        // Check if the click target is NOT inside the element (ref.current)
+        if (ref.current && !ref.current.contains(event.target)) {
+          callback();
+        }
+      };
+
+      // Add listener to the entire document
+      document.addEventListener("mousedown", handleClick);
+
+      // Cleanup: Remove listener when component unmounts
+      return () => {
+        document.removeEventListener("mousedown", handleClick);
+      };
+    }, [ref, callback]);
+  };
+
+  useClickOutside(signInButtonRef, () => setTriggedSignInButton(false));
+
+
+  return (
+    <div className="relative">
+
+      <motion.div style={{ textAlign: "center" }} className=" flex md:my-[2%] justify-center items-center" >
         {/* {console.log(imageUrl)} */}
+
 
         <motion.div
           initial={{ y: 30, opacity: 0 }}
@@ -67,10 +96,10 @@ export const ImageGen = () => {
           exit={{ y: -300, opacity: 0 }}
           viewport={{ once: true }} // Ensures animation runs only once
           transition={{ type: "spring", bounce: 0.1, visualDuration: 0, duration: 0.1 }}
-          className={`m-2 rounded-[2.5em] flex overflow-visible z-1 shadow-2xl w-full duration-500 md:w-[95%] md:py-3 md:px-3 md:gap-3 py-2.5 px-2 bg-white border-red-500/85 /border md:rounded-[3em] `} >
+          className={` m-2 rounded-[2.5em] md:rounded-[3em] flex overflow-x2 z-1 shadow-2xl w-full duration-500 md:w-[95%] md:py-3 md:px-3 md:gap-3 py-2.5 px-2 bg-white border-red-500/85 /border `} >
           {/* <h2 className="flex justify-center mb-6 font-extrabold text-4xl
-    ">AI Generated Image</h2> */}
-          <div className="p-1 flex flex-1/2 max-h-full md:flex-row flex-col md:justify-start items-center md:items-start w-full gap-4" style={{ border: "none" }} >
+         ">AI Generated Image</h2> */}
+          <div className={`p-1 flex flex-1/2 max-h-full flex-col md:flex-row md:justify-start items-center md:items-start w-full gap-4`} style={{ border: "none" }} >
             <PromptBox
               Prompt={Prompt}
               setPrompt={setPrompt}
@@ -96,34 +125,36 @@ export const ImageGen = () => {
               isMobile={isMobile}
               fileName={fileName}
               setFilename={setFilename}
+              tiggedSignInButton={tiggedSignInButton}
+              setTriggedSignInButton={setTriggedSignInButton}
             />
 
 
-            {console.log(imageUrl)}
+            {/* {console.log(imageUrl)} */}
             <div style={{ border: "none" }} className={`overflow-y-visible md:w-[70vw] w-full h-full  grow outline-none `}>
               {button ?
                 error ?
-                  <ul className=" md:w-[40vw] w-[94vw]  h-[345px] animate-none text-sm whitespace-normal  wrap-break-word md:h-full  p-6  md:rounded-4xl bg-linear-to-r  from-red-400/35 to-yellow-200/65 text-wrap overflow-x-scroll rounded-[3em]">
+                  <ul className=" md:w-[40vw] w-[94vw]  animate-none text-sm whitespace-normal  wrap-break-word md:h-full p-6 md:rounded-4xl bg-linear-to-r  from-red-400/35 to-yellow-200/65 text-wrap overflow-x-scroll rounded-[3em]">
 
                     {/*<span className="text-lg font-bold opacity-35 text-red-500 ">{error ? (typeof error === 'object' ? error.error.message ? error.error.message : JSON.stringify(error) ||error.error : error) : ""}</span> JSON.stringify(error) */}
                     <pre className="block whitespace-pre-line text-start h-full">
                       <div className="text-[14px] font-light text-black/44 h-full ">
                         {/* {error.error !== undefined ? JSON.stringify(JSON.parse(error.error.split('400 ')[1]), null, .5) */}
 
-                        {error.Status === 402 &&
-                          <div className="bg-white relative opacity-65 w-full rounded-3xl  p-5 h-full ">
-                            <div className="w-full flex justify-center  items-center flex-col relative ">  <img src={animatedLogo} className="w-50 h-50" />
-                              <p className="text-red-600 text-2xl absolute bottom-0 font-extrabold ">Error</p>
-                            </div>
 
-                            <p className="w-full mt-2 px-2 py-1 md:text-[1.2vw] text-sm flex "><p className="text-yellow-500">Code</p><p className="pl-8 pr-2.5 font-extrabold text-yellow-500">:</p><p> {error.Code}</p></p>
-                            <span className="w-full py-1 md:text-[1.2vw] text-sm flex "><p className="text-yellow-500">Message</p><p className="pl-3 pr-3 font-extrabold text-yellow-500">:</p><p> {error.Message}</p></span>
-                            <span className="w-full py-1 md:text-[1.2vw] text-sm flex "><p className="text-yellow-500">Message</p><p className="pl-3 pr-3 font-extrabold text-yellow-500">:</p><p> {error.Message}</p></span>
-
-                            {/* <div onClick={handleDownload} className="absolute bottom-0 right-0 md:m-5 m-2 z-300 bg-red-600 shadow-sm shadow-black/22  cursor-pointer hover:bg-red-800 rounded-full p-3 duration-500 " >
-                          <FaDownload className="w-5 h-8.5 mx-1.5 text-white" /> </div> */}
+                        <div className="bg-white overflow-auto relative opacity-65 w-full rounded-3xl  p-5 h-full ">
+                          <div className="w-full flex justify-center  items-center flex-col relative ">  <img src={animatedLogo} className="w-50 h-50" />
+                            <p className="text-red-600 text-2xl absolute bottom-0 font-extrabold ">Error</p>
                           </div>
-                        }
+
+                          <p className="w-full mt-2 px-2 py-1 md:text-[1.2vw] text-sm flex "><p className="text-yellow-500">Code</p><p className="pl-8 pr-2.5 font-extrabold text-yellow-500">:</p><p> {error.Code}</p></p>
+                          <span className="w-full py-1 md:text-[1.2vw] text-sm flex "><p className="text-yellow-500">Message</p><p className="pl-3 pr-3 font-extrabold text-yellow-500">:</p><p> {error.Message}</p></span>
+                          <span className="w-full py-1 md:text-[1.2vw] text-sm flex "><p className="text-yellow-500">Message</p><p className="pl-3 pr-3 font-extrabold text-yellow-500">:</p><p> {error.Message}</p></span>
+
+                          {/* <div onClick={handleDownload} className="absolute bottom-0 right-0 md:m-5 m-2 z-300 bg-red-600 shadow-sm shadow-black/22  cursor-pointer hover:bg-red-800 rounded-full p-3 duration-500 " >
+                          <FaDownload className="w-5 h-8.5 mx-1.5 text-white" /> </div> */}
+                        </div>
+
                       </div>
                     </pre>
                   </ul>
@@ -167,8 +198,46 @@ export const ImageGen = () => {
 
           </div>
         </motion.div>
+
       </motion.div>
-    </>
+      <AnimatePresence>
+        {tiggedSignInButton &&
+          <div
+
+            className=" absolute w-full z-5 top-0 h-full flex justify-center items-center md:px-8 px-0 py-2 ">
+            <div
+              className=" backdrop-blur-sm bg-black/2 w-full h-full flex justify-center items-center rounded-[2.5em] md:rounded-[3em] px-3 ">
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4, visualDuration: 0.4, ease: "easeInOut" }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                ref={signInButtonRef}
+                key="signup"
+                className="relative bg-white flex-col flex justify-center items-center rounded-[2.5em] py-2 px-5 shadow-2xl pt-15">
+                <IoIosClose onClick={() => setTriggedSignInButton(false)} className="absolute w-10 h-10 right-4 top-4 text-red-600 cursor-pointer p-1 rounded-full bg-red-300/45 hover:bg-red-300/35 duration-300" />
+                <div className="px-5 text-lg my-3 mb-4"> <b className="text-red-400">SignUp / SignIn</b> to Access & Generate Images </div>
+                <SignInButton
+                  className={`hover:duration-830 transition pr-8 mx-1.5 my-3.5 p-3 text-white text-md cursor-pointer font-bold hover:bg-gradient-to-r  hover:from-red-500 hover:to-yellow-500 hover:text-white px-6 py-3 rounded-4xl flex justify-center items-center pl-8 mr-2 bg-red-500  `}>
+                  <span>
+                    Get Start
+                    <FaArrowRight className='inline-block ml-3.5 transition-all ' />
+                  </span>
+                </SignInButton>
+              </motion.div>
+            </div>
+          </div>
+
+        }
+      </AnimatePresence >
+      {/* {
+  <div className=" absolute bg-teal-200 z-5 bottom-0 right-1 h-[30%] flex justify-center items-center">
+                  <p>Note : The credits will be allocated by puter.js on your puter.js account creation</p>
+
+  </div>
+} */}
+    </div >
   );
 
 }

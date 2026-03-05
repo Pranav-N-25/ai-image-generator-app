@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.54.0",
+    "@heyputer/puter.js": "^2.2.10",
     "@tailwindcss/vite": "^4.1.11",
     "@uiw/react-color": "^2.9.2",
     "axios": "^1.13.4",

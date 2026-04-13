@@ -17,6 +17,7 @@ export const AppContextProvider = ({ children }) => { //for wrapping the app
   const [messages, setMessages] = React.useState([]);
   const { getToken } = useAuth();
   const isMobile = useMediaQuery({ maxWidth: 768 });
+  const [stopScrolling, setStopScrolling] = React.useState(false);
   // Accessing user parameters
   const api = axios.create({ baseURL: import.meta.env.VITE_BACKEND_URL });
   const id = user ? user.id : null;
@@ -49,7 +50,9 @@ export const AppContextProvider = ({ children }) => { //for wrapping the app
     getToken,
     isMobile,
     drawerOpen,
-    setDrawerOpen
+    setDrawerOpen,
+    stopScrolling,
+    setStopScrolling
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

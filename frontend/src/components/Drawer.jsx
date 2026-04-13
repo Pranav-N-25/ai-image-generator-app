@@ -3,8 +3,7 @@
 import React from 'react';
 import { NavLink, useLocation, Link } from "react-router-dom";
 import logo from '../assets/logo-ai.webp'
-
-// Icons
+import { createPortal } from 'react-dom';
 
 import { FaX } from "react-icons/fa6"; // Close
 import { IoHome } from "react-icons/io5"; //Home
@@ -25,15 +24,17 @@ const Drawer = ({ drawerOpen, setDrawerOpen }) => {
     const handleOuterClick = (e) => {
         setDrawerOpen(!drawerOpen);
     }
+    const mountNode = document.getElementById('portal-root');
 
-    return (<div>
+    // Icons
+    return (createPortal(<div>
         {drawerOpen && <motion.div
             onClick={(e) => handleOuterClick(e)}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, scale: 0 }}
             transition={{ duration: 0.2, visualDuration: 0.2, type: "spring", bounce: 0.2 }}
-            className={`${drawerOpen ? "fixed " : "hidden "} flex justify-center flex-col items-start md:text-lg duration-300 top-0 w-full m-0 p-0 inset-0 h-full backdrop-blur-lg bg-black/35 z-100`}>
+            className={`${drawerOpen ? "fixed " : "hidden"} flex justify-center flex-col items-start md:text-lg duration-300 top-0 w-full m-0 p-0 inset-0 h-full backdrop-blur-lg bg-black/35 z-100`}>
 
             <motion.div
                 initial={{ opacity: 0, x: -250 }}
@@ -67,7 +68,7 @@ const Drawer = ({ drawerOpen, setDrawerOpen }) => {
             </motion.div>
         </motion.div >}
     </div>
-    )
+        , mountNode))
 }
 
 export default Drawer

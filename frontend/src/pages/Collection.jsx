@@ -1,8 +1,10 @@
 import React from 'react'
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
 import { useMediaQuery } from "react-responsive";
 import { useUser, SignInButton } from "@clerk/clerk-react";
-import { useAppContext } from "../context/AppContext.jsx";
+import axios from "axios";
+
 import { FaArrowRight } from "react-icons/fa";
 import { IoResizeOutline } from "react-icons/io5";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -12,16 +14,16 @@ import { CgInfo } from "react-icons/cg";
 import { MdOutlineCancel } from "react-icons/md";
 import { IoCloseOutline } from "react-icons/io5";
 import { IoIosClose } from "react-icons/io";
+import { MdCollections } from "react-icons/md";
+import { MdOutlineCrop } from "react-icons/md";
 
-
-import axios from "axios";
-
+import { useAppContext } from "../context/AppContext.jsx";
+import Popup from '../components/Popup.jsx';
 
 const Collection = () => {
 
-  const { api, id, email } = useAppContext();
-  const isTab = useMediaQuery({ maxWidth: 885 });
-  const isMobile = useMediaQuery({ maxWidth: 597 });
+  const { id, email } = useAppContext();
+  const isMobile = useMediaQuery({ maxWidth: 767 });
   const { user } = useUser();
   const [collection, setCollection] = React.useState([]);
   const [hover, isHover] = React.useState(false);
@@ -41,9 +43,12 @@ const Collection = () => {
   const deleteRef = React.useRef(null);
   const [tools, setTools] = React.useState(false);
   const [clickIndex, setClickIndex] = React.useState(null);
-  const clickRef = React.useRef(null);
-
-
+  const [shadow, setShadow] = React.useState(null);
+  const [preview, setPreview] = React.useState(false);
+  const [previewIndex, setPreviewIndex] = React.useState(null);
+  const [editImage, setEditImage] = React.useState(false);
+  const [editIndex, setEditIndex] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
   const useClickOutside = (ref, callback) => {
     React.useEffect(() => {
       const handleClick = (event) => {
@@ -65,45 +70,71 @@ const Collection = () => {
   useClickOutside(renameRef, () => { setOpenRename(false); setRenameIndex(null); });
   useClickOutside(infoRef, () => { setmoreInfo(false); setInfoIndex(null); });
   useClickOutside(deleteRef, () => { setOpenDeleteConfirm(false); setDeleteIndex(null); });
-  useClickOutside(clickRef, () => { setTools(false); setClickIndex(null); });
 
-
-  // FetchImage
-
-  const fetchImage = async () => {
-    if (user) {
-      try {
-        setCollectionError(false);
-        setCollection(null);
-        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/image?userId=` + id + "&emailId=" + email);
-        // console.log(res);
-        setCollection(res.data);
-      }
-      catch (error) { "Collection Error : " + error; setCollectionError(true); }
-    }
-
-  }
   const deleteImage = async (cloudinary_image_public_id) => {
-    console.log(cloudinary_image_public_id.slice(6, cloudinary_image_public_id + 1));
-    const deleteResponse = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/image/` + cloudinary_image_public_id.slice(5, cloudinary_image_public_id.length) + "/" + user.id);
-    // console.log(deleteResponse.message);
+    // console.log(cloudinary_image_public_id.slice(6, cloudinary_image_public_id + 1));
+    await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/image/` + cloudinary_image_public_id.slice(5, cloudinary_image_public_id.length) + "/" + user.id);
+    setDeleteIndex(null);
+    setOpenDeleteConfirm(false);
     setFlag("delete");
   }
 
   const updateImage = async (imageId, imageName, userId) => {
-    const putResponse = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/image/` + imageId + "/" + imageName + "/" + userId);
-    // console.log(putResponse.data);
+    setRenameIndex(null);
+    setOpenRename(false);
+    await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/image/` + imageId + "/" + imageName + "/" + userId);
+    setNewImageName("");
     setFlag("updated");
-    // fetchImage();
-
   }
+
+
+  const uploadImage = async (file, fileName, secondaryName) => {
+    setLoading(true);
+    const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_NAME; // Your Cloudinary cloud name
+    const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_PRESET;
+    const FOLDER = "SAAI"; // The folder you want to use
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
+    formData.append("folder", FOLDER); // Optional if set in preset
+
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+      { method: "POST", body: formData }
+    );
+
+    const data = await response.json();
+    // console.log(data);
+    await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/image`, { imageName: fileName, userId: id, imageUrl: data.secure_url, cloudinary_image_public_id: data.public_id, emailId: email, type: secondaryName });
+    setFlag("ImageUploadAfterEdit");
+    setLoading(false);
+
+  };
 
   React.useEffect(() => {
+
+    // FetchImage
+
+    const fetchImage = async () => {
+      if (user) {
+        try {
+          setLoading(true);
+          setCollectionError(false);
+          setCollection(null);
+          const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/image?userId=` + id + "&emailId=" + email);
+          // console.log(res);
+          setCollection(res.data);
+          setLoading(false);
+        }
+        catch (error) { "Collection Error : " + error; setCollectionError(true); }
+      }
+
+    }
     fetchImage();
-    // console.log(flag);
     setFlag(null);
   }
-    , [id, flag])
+    , [id, email, user, flag])
 
   //Handle Download
 
@@ -119,13 +150,19 @@ const Collection = () => {
     link.click();
   }
 
-  return ( 
-    <>
+  setTimeout(() => {
+    setShadow('shadow-[0px_0px_85px_15px] shadow-yellow-300');
+  }
+    , 500
+  )
+
+  return (
+    <div className="mt-25">
       {user ?
-        collection && !collectionError ?
-          <div className="w-full px-2">
+        collection && !collectionError && !loading ?
+          <div className="w-full h-full px-2 ">
             <div
-              className="mb-10 grid md:grid-cols-3 gap-3 grid-col-1 w-full h-full px-3 py-3 overflow-y-scroll scroll-smooth rounded-4xl bg-white shadow-2xl min-h-[89vh] my-6 md:my-3"
+              className="mb-10 grid md:grid-cols-3 gap-x-3 gap-y-3 grid-col-1 w-full h-full px-3 py-3 overflow-y-scroll scroll-smooth rounded-4xl bg-white shadow-2xl min-h-[89vh] my-6 md:my-3"
             >
               {collection.map((col, index) => {
                 return (
@@ -136,31 +173,29 @@ const Collection = () => {
                     key={index}
                     onMouseEnter={() => { isHover(true); setaHoverIndex(index); }}
                     onMouseLeave={() => { isHover(false); setaHoverIndex(null); }}
-                    className={` select-none relative w-full h-fit`}
-                  >           
-
-                    <img
-                      ref={clickRef}
-                      onLoad={() => { setImageLoaded(true) }}
-                      onClick={(e) => { setTools(true); setClickIndex(index); }}
-                      className={`rounded-4xl duration-200 transition-all  `}
-                      src={col.imageUrl} />
-
+                    className={` select-none relative w-full h-fit `}
+                  >
+                    <div
+                      onClick={(e) => { setTools(true); setClickIndex(index); e.stopPropagation(); }}
+                      className="w-full h-full flex justify-center items-center">
+                      <img
+                        onLoad={() => { setImageLoaded(true) }}
+                        className={`rounded-4xl duration-200 transition-all h-fit w-fit `}
+                        src={col.imageUrl} />
+                    </div>
                     {
                       (((isMobile ?
-                        (tools && clickIndex === index && imageLoaded)
+                        ((tools && clickIndex === index && imageLoaded) || ((index === renameIndex) || (index === infoIndex) || (index === deleteIndex) || (index === previewIndex) || (index === editIndex)))
                         :
-                        (hover && index === hoverIndex && imageLoaded)) || ((index === renameIndex) || (index === infoIndex) || (index === deleteIndex)))) &&
-                      <div
-                        ref={clickRef}
-                      >
+                        (hover && index === hoverIndex && imageLoaded)) || ((index === renameIndex) || (index === infoIndex) || (index === deleteIndex) || (index === previewIndex) || (index === editIndex)))) &&
+                      <div>
                         <motion.div
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                         >
                           <CgInfo
                             onClick={() => { setmoreInfo(true); setInfoIndex(index); }}
-                            className={` absolute right-1 top-2  mt-4 mr-4 cursor-pointer z-1  p-3 w-13 h-13 bg-black/23 hover:bg-black/35 duration-300 text-white rounded-full`}
+                            className={` absolute right-1 top-2  mt-4 mr-4 cursor-pointer z-1 p-3 h-12 w-12 md:p-[1vw] md:w-[4vw] md:h-[4vw] bg-black/23 hover:bg-black/35 duration-300 text-white rounded-full`}
                           />
                         </motion.div>
 
@@ -172,7 +207,7 @@ const Collection = () => {
                             className=" ">
                             <IoCloseOutline
                               onClick={() => { setClickIndex(null); setTools(false); }}
-                              className={` absolute left-5 top-2  mt-4 mr-4 cursor-pointer z-1  p-3 w-13 h-13 bg-black/23 hover:bg-black/35 duration-300 text-white rounded-full`}
+                              className={` absolute left-5 top-2  mt-4 mr-4 cursor-pointer z-1 p-3 h-13 w-13 md:p-[1vw] md:w-[4vw] md:h-[4vw] bg-black/23 hover:bg-black/35 duration-300 text-white rounded-full`}
                             />
                           </motion.div>
                         }
@@ -208,7 +243,7 @@ const Collection = () => {
                                     <tr className="flex  justify-start items-center pb-1.5"><td className="flex justify-start items-center font-extrabold md:w-22 w-[20vw] text-red-500 ">ImageID</td><td className=""><b className="text-red-500 pr-2"> : </b> {col._id}</td></tr>
                                     <tr className="flex  justify-start items-center pb-1.5"><td className="flex justify-start items-center font-extrabold md:w-22 w-[20vw] text-red-500 ">CreatedAt</td><td className=""><b className="text-red-500 pr-2"> : </b> {col.createdAt}</td></tr>
                                     <tr className="flex  justify-start items-center pb-1.5"><td className="flex justify-start items-center font-extrabold md:w-22 w-[20vw] text-red-500 ">StoredIn</td><td className=""><b className="text-red-500 pr-2"> : </b> Cloudinary cloud</td></tr>
-                                    <tr className="flex  justify-start items-center pb-1.5"><td className="flex justify-start items-center font-extrabold md:w-22 w-[20vw] text-red-500 ">ImageType</td><td className=""><b className="text-red-500 pr-2"> : </b> JPG</td></tr>
+                                    <tr className="flex  justify-start items-center pb-1.5"><td className="flex justify-start items-center font-extrabold md:w-22 w-[20vw] text-red-500 ">ImageType</td><td className=""><b className="text-red-500 pr-2"> : </b> {col.type}</td></tr>
                                     <tr className="flex  justify-start items-center pb-1"><td className="flex justify-start items-center font-extrabold md:w-22 w-[20vw] text-red-500 ">Encoding</td><td className=""><b className="text-red-500 pr-2"> : </b> base64</td></tr>
                                   </tbody>
                                 </table>
@@ -238,123 +273,81 @@ const Collection = () => {
 
                             {/* Button */}
                             <motion.div
-                              className="flex gap-[6vw] md:gap-[2vw] "
+                              className="flex gap-[3.5vw] md:gap-[2vw] "
                               initial={{ y: 30, opacity: 0 }}
                               animate={{ y: 0, opacity: 1 }}
                               transition={{ bounce: .3, type: "spring", visualDuration: 0.4 }}
                             >
 
-                              <div
-                                ref={deleteRef}
-                                className="relative"
+
+                              <RiDeleteBin6Line
+                                onClick={() => { setOpenDeleteConfirm(!openDeleteConfirm); setDeleteIndex(index); }}
+                                className={`p-3 h-12 w-12  md:p-[1vw] md:w-[4vw] md:h-[4vw] mb-6 cursor-pointer  bg-black/23 hover:bg-black/35 duration-300 text-white rounded-full `} />
+                              <AnimatePresence
+                                mode="wait"
                               >
-                                <RiDeleteBin6Line
-                                  onClick={() => { setOpenDeleteConfirm(!openDeleteConfirm); setDeleteIndex(prev => prev === index ? null : index); }}
-                                  className={` p-3 w-13 h-13 mb-6 cursor-pointer  bg-black/23 hover:bg-black/35 duration-300 text-white rounded-full `} />
-
                                 {openDeleteConfirm && deleteIndex === index &&
-                                  <div
-                                    className="absolute w-55 p-3 bg-white rounded-3xl -top-32 -left-12">
-                                    <div
-                                      className="px-2 py-2">
-                                      Are you Sure ?
-                                    </div>
-                                    <div
-                                      onClick={() => { setDeleteIndex(null); deleteImage(col.cloudinary_image_public_id); }}
-                                      className=" text-[15px] select-none w-50 h-full flex justify-center items-center p-2 text-white font-extrabold bg-red-600/55 hover:bg-red-600 cursor-pointer rounded-3xl duration-300">
-                                      Delete
-                                    </div>
-                                  </div>
+                                  <Popup type={"Window"} open={openDeleteConfirm} index={deleteIndex} setOpen={setOpenDeleteConfirm} title={"Delete"} buttonName={"Delete"} setIndex={setDeleteIndex} Content={"The Image will be Deleted from your Collection, Are you Sure ? "} _ref={deleteRef} onSuccess={() => deleteImage(col.cloudinary_image_public_id)} icon={<RiDeleteBin6Line className="p-2 w-10 h-10 bg-red-400/33 rounded-full " />} />
                                 }
 
-                                {openDeleteConfirm && deleteIndex === index &&
-                                  <div
-                                    className=" select-none absolute -top-10 left-2 text-4xl shadow-2xl shadow-black/55 z-10 text-white ">
-                                    &#9660;
-                                  </div>
-                                }
+                              </AnimatePresence>
 
-                              </div>
-
-                              <div
-                                ref={renameRef}
-                                className="relative">
-                                <MdOutlineDriveFileRenameOutline
-                                  onClick={() => { setOpenRename(!openRename); setRenameIndex(prev => prev === index ? null : index); }}
-                                  className={` p-3 w-13 h-13 mb-6 cursor-pointer bg-black/23 hover:bg-black/35 duration-300 text-white rounded-full `} />
+                              <MdOutlineDriveFileRenameOutline
+                                onClick={() => { setOpenRename(!openRename); setRenameIndex(prev => prev === index ? null : index); }}
+                                className={`p-3 h-12 w-12  md:p-[1vw] md:w-[4vw] md:h-[4vw] mb-6 cursor-pointer bg-black/23 hover:bg-black/35 duration-300 text-white rounded-full `} />
+                              <AnimatePresence
+                                mode="wait"
+                              >
                                 {openRename && index === renameIndex &&
-                                  <div>
-                                    <div
-                                      className="absolute w-85 p-3 shadow-2xl shadow-black/55 bg-white z-10 rounded-3xl -top-38 -left-26 overflow-x-visible">
-                                      <div
-                                        className="flex justify-center items-center">
-                                        <input
-                                          type={"text"}
-                                          onChange={(e) => { setNewImageName(e.target.value) }}
-                                          value={newImageName}
-                                          placeholder={"Enter the New Name"}
-                                          className="bg-black/5 w-full rounded-xl h-13 outline-0 px-3 teext-[10px] placeholder:text-sm"
-                                          onKeyDown={(e) => {
-                                            if (e.key === "Enter" && !e.shiftKey && newImageName.trim() !== "") {
-                                              e.preventDefault();
-                                              setRenameIndex(null);
-                                              setOpenRename(false);
-                                              updateImage(col._id, newImageName, col.userId);
-                                              setNewImageName("");
-                                            }
-                                          }}
-                                        />
-
-                                      </div>
-
-
-                                      <div
-                                        className="flex justify-center items-center pt-3 gap-2">
-                                        <div
-                                          onClick={() => { setOpenRename(false); setRenameIndex(null); }}
-                                          className=" text-[15px] select-none w-full h-full flex justify-center items-center p-2 bg-red-600/65 text-white hover:bg-red-600 hover:text-white duration-300 rounded-3xl cursor-pointer font-extrabold "
-                                        >
-                                          Cancel
-                                        </div>
-                                        <div
-                                          onClick={() => { setRenameIndex(null); setOpenRename(false); updateImage(col._id, newImageName, col.userId); setNewImageName(""); }}
-                                          className=" text-[15px] select-none w-full h-full flex justify-center items-center p-2 text-white font-extrabold bg-bluepink-1/55 hover:bg-bluepink-1 cursor-pointer rounded-3xl duration-300"
-                                        >
-                                          Rename
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div
-                                      className=" select-none absolute -top-10 left-1 text-4xl shadow-2xl shadow-black/55 z-10 text-white ">
-                                      &#9660;
-                                    </div>
-                                  </div>
+                                  <Popup type={"Window"} open={openRename} newImageName={newImageName} setNewImageName={setNewImageName} index={renameIndex} setOpen={setOpenRename} title={"Rename"} buttonName={"Rename"} setIndex={setRenameIndex} Content={""} _ref={renameRef} onSuccess={() => updateImage(col._id, newImageName, col.userId)} icon={<MdOutlineDriveFileRenameOutline className="p-2 w-10 h-10 bg-blue-400/33 rounded-full " />} />
                                 }
-                              </div>
+                              </AnimatePresence>
+
 
                               <MdDownload
                                 onClick={() => { handleDownload(col.imageUrl, col.imageName) }}
-                                className={` p-3 w-13 h-13 mb-6 cursor-pointer bg-black/23 hover:bg-black/35 duration-300 text-white rounded-full `}
+                                className={`p-3 h-12 w-12 md:p-[1vw] md:w-[4vw] md:h-[4vw] mb-6 cursor-pointer bg-black/23 hover:bg-black/35 duration-300 text-white rounded-full `}
                               />
 
-                              <IoResizeOutline
-                                onClick={() => { const link = document.createElement("a"); link.href = col.imageUrl; link.target = "_blank"; link.click(); }}
-                                className={`p-3 w-13 h-13 mb-6 rotate-90 cursor-pointer bg-black/23 hover:bg-black/35 duration-300 text-white rounded-full `}
+                              <MdOutlineCrop
+                                onClick={() => { setEditIndex(index); setEditImage(!preview); }}
+                                className={`p-3 h-12 w-12 md:p-[1vw] md:w-[4vw] md:h-[4vw] mb-6 cursor-pointer bg-black/23 hover:bg-black/35 duration-300 text-white rounded-full `}
                               />
+
+                              <AnimatePresence
+                                mode="wait"
+                              >
+                                {editImage && editIndex === index &&
+                                  <Popup type={"Edit"} onSuccess={uploadImage} open={editImage} setOpen={setEditImage} setIndex={setEditIndex} imageUrl={col.imageUrl} loading={loading} setLoading={setLoading} />
+                                }
+                              </AnimatePresence>
+
+
+                              <IoResizeOutline
+                                onClick={() => { setPreviewIndex(index); setPreview(!preview); }}
+                                className={`p-3 h-12 w-12 md:p-[1vw] md:w-[4vw] md:h-[4vw] mb-6 rotate-90 cursor-pointer bg-black/23 hover:bg-black/35 duration-300 text-white rounded-full `}
+                              />
+
+                              <AnimatePresence
+                                mode="wait"
+                              >
+                                {preview && previewIndex === index &&
+                                  <Popup type={"Preview"} open={preview} setOpen={setPreview} setIndex={setPreviewIndex} imageUrl={col.imageUrl} />
+                                }
+                              </AnimatePresence>
 
                             </motion.div>
                           </motion.div>
-
                         </div>
-                      </div>
+                      </div >
                     }
-                  </motion.div>
+                  </motion.div >
                 )
               }
               )
               }
-            </div>
-          </div>
+            </div >
+          </div >
 
           :
 
@@ -394,22 +387,25 @@ const Collection = () => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.4, visualDuration: 0.4, ease: "easeInOut" }}
           exit={{ opacity: 0 }}
-          className=" w-full h-[90%] flex justify-center items-center px-3">
-          <div className="relative bg-white flex-col flex justify-center items-center rounded-[2.5em] py-2 px-5 shadow-2xl shadow-yellow-300 pt-3">
-            {/* <IoIosClose className="absolute w-8 h-8 right-4 top-4 text-red-600" /> */}
-            <div className="px-5 text-lg my-3 text-center"> SignUp / SignIn to Access Collection </div>
+          className=" w-full mt-50 mb-50 flex justify-center items-center px-3">
+          <div className={`relative bg-white flex-col flex justify-center items-center rounded-[2.5em] py-2 px-5 duration-800  pt-3 ${shadow}`}>
+            <MdCollections className="w-38 h-35 mt-5 mb-4 " style={{ fill: "url(#yellow-red-gradient)" }} />
+            <div className="px-5 text-lg my-3 text-center"> <b className="text-red-400">SignUp / SignIn</b> to Access Collection </div>
             <SignInButton
-              className={`hover:duration-830 transition pr-8 mx-1.5 my-3.5 p-3 text-white text-md cursor-pointer font-bold hover:bg-gradient-to-r  hover:from-red-500 hover:to-yellow-500 hover:text-white px-6 py-3 rounded-4xl flex justify-center items-center pl-8 mr-2 bg-red-500  `}>
+              className={`group hover:duration-830 transition pr-8 mx-1.5 my-5.5 p-3 text-white text-md cursor-pointer font-bold hover:bg-linear-to-r  hover:from-red-500 hover:to-yellow-500 hover:text-white px-6 py-3 rounded-4xl flex justify-center items-center pl-8 mr-2 bg-red-500  `}>
               <span>
                 Get Start
-                <FaArrowRight className='inline-block ml-3.5 transition-all ' />
+                <FaArrowRight className='inline-block ml-2.5 transition-all -tanslate-x-3 group-hover:translate-x-1.5 group-hover:scale-105 ' />
               </span>
             </SignInButton>
           </div>
+
         </motion.div>
       }
 
-    </>
+
+
+    </div>
 
   )
 }

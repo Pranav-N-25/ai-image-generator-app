@@ -35,10 +35,10 @@ const fetchImage = async (req, res) => { // Fetch Image
 
 const saveImage = async (req, res) => {  // POST request
     try {
-        const { imageName, emailId, userId, imageUrl, cloudinary_image_public_id } = req.body;
+        const { imageName, emailId, userId, imageUrl, cloudinary_image_public_id, type } = req.body;
 
-        image = await Image.create({ userId, emailId, cloudinary_image_public_id, imageName, imageUrl });
-        res.json(image);
+        image = await Image.create({ userId, emailId, cloudinary_image_public_id, imageName, imageUrl, type });
+        res.json({ message: " Image Upload Successful" });
 
         console.log("Image Created from  for UserID : " + userId + "and it's cloudinary public ID is , " + cloudinary_image_public_id);
     }
@@ -80,13 +80,13 @@ const deleteImage = async (req, res) => {  // delete image
 
         const result = await cloudinary.v2.uploader.destroy(cloudinary_image_public_id);
 
-
         if (!isImageDeleted && !result) {
             res.status(404).json({ message: "Image Deletion unsuccessful " });
         }
 
 
-        console.log("Image Deleted From UserId : " + userId)
+        console.log("Image Deleted From UserId : " + userId);
+        console.log("Result from Cloudinary : " + JSON.stringify(result));
     }
     catch (e) {
         console.log(" Image Deletion Error :" + e);

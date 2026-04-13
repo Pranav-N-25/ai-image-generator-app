@@ -1,7 +1,7 @@
 import React from "react";
 import SuccessAlert1 from "./components/SuccessAlert1";
 import Button from "./components/Button";
-import { Routes, Route } from "react-router-dom";
+import { ScrollRestoration, Outlet } from "react-router-dom";
 import { Pages } from "./pages/Index";
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
@@ -9,18 +9,24 @@ import { useAppContext } from "./context/AppContext.jsx";
 
 const App = () => {
 
-  const { drawerOpen } = useAppContext();
+  const { drawerOpen, stopScrolling } = useAppContext();
 
   return (
-    <div className={` relative w-full  ${drawerOpen ? "overflow-y-hidden" : ""} h-screen bg-white/50 overflow-y-auto backdrop-blur-3xl `}>
+    <div className={` relative w-full  ${(drawerOpen || stopScrolling) ? "overflow-y-hidden" : ""} /h-screen bg-white/35 overflow-y-auto backdrop-blur-3xl `}>
+
+      <ScrollRestoration />
+
       <NavBar />
-      <Routes>
-        <Route exact path="/" element={Pages.Home} />
-        <Route path="*" element={Pages.NotFoundPage} />
-        <Route path="/imagegen" element={Pages.ImgGenerator} />
-        <Route path="/collection" element={Pages.Collection} />
-        <Route path="/about" element={Pages.About} />
-      </Routes>
+
+      <svg width="0" height="0" className="absolute">
+        <linearGradient id="yellow-red-gradient" x1="100%" y1="100%" x2="0%" y2="0%">
+          <stop stopColor="#ffcc00" offset="0%" /> {/* yellow-400 */}
+          <stop stopColor="#ff0000" offset="80%" /> {/* red-600 */}
+        </linearGradient>
+      </svg>
+      
+      <Outlet />
+
       <Footer />
 
     </div>

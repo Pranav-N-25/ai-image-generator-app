@@ -19,7 +19,8 @@
   </style>
 </head>
 
-<body style="height: 100%;width: 100%;margin: 0px ;padding: 0px;" class="bg-linear-to-l from-red-600 to-yellow-300 bg-no-repeat bg-cover bg-fixed c">
+<body id="portal-root" style="height: 100%;width: 100%;margin: 0px ;padding: 0px;z-index: 30;"
+  class="bg-linear-to-l from-red-600 to-yellow-300 bg-no-repeat bg-cover bg-fixed c">
   <div style="height: 100%;width: 100%;margin: 0px ;padding: 0px;" id="root" class="c -mt-3"></div>
   <script type="module" src="/src/main.jsx"></script>
 
@@ -45,6 +46,8 @@
       document.getElementById('loading-screen').style.display = 'none';
     };
   </script>
+
+
 </body>
 
 </html>

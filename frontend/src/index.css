@@ -3,7 +3,7 @@
 
 @layer components {
   .navbar {
-    @apply relative z-40 ml-8 border mx-1.5 text-gray-500/55 cursor-default font-bold duration-300 hover:bg-red-500/15 hover:text-red-500 px-6 py-2.5 rounded-4xl
+    @apply relative z-40 ml-8 mx-1.5 text-gray-500/55 cursor-default font-bold duration-300  px-6 py-2.5 rounded-4xl
   }
 }
 
@@ -90,7 +90,7 @@
 }
 
 .p {
-  color: #adadad;
+  color: oklab(86.393% -0.22272 0.15603);
 }
 
 body {
@@ -101,33 +101,65 @@ body {
   display: none;
 }
 
+/* Match internal scrollbars to the red-yellow theme */
+.FIE_root ::-webkit-scrollbar-thumb {
+  background: #ffcc00 !important;
+}
+
+/* Make the active tool highlight "Glow" */
+.FIE_tab-item-active {
+  color: #ffcc00 !important;
+  border-bottom: 2px solid #ffcc00 !important;
+}
+
+
+.FIE_slider-input {
+  accent-color: #ffcc00 !important;
+}
+
+.FIE_save-button {
+  background-color: #FFCC00 !important; 
+  border: none !important;
+}
+
+
+
+.FIE_save-button svg, 
+.FIE_save-button-label {
+  color: #ff0000 !important; 
+  fill: #CC0000 !important;
+}
+
+/* Hover effect */
+.FIE_save-button:hover {
+  background-color: #FFD700 !important;
+  box-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
+}
+
+
+
+/* Target all action buttons in the editor */
+.filerobot-image-editor .FIE_button {
+  border-radius: 12px !important; /* medium rounded */
+}
+
+/* If you want pill-shaped buttons */
+.filerobot-image-editor .FIE_button {
+  border-radius: 9999px !important;
+}
 .ai-aurora {
-  /* width: 300px;
-  height: 300px; */
-  /* border-radius: 20px; */
+
   background: radial-gradient(circle at top left, #fbff00, #ff0000);
-  /* background: radial-gradient(circle at top left, #00ffe0, #8a00ff); */
-  /* box-shadow: 0 0 30px rgba(251, 255,3), 0 0 80px rgba(255, 0, 3), 0 0 880px rgb(255, 0, 242); */
   animation: auroraGlow 0.1s ease-in-out infinite;
   transition: transform 0.1s ease;
 }
 
 .ai-aurora1 {
-  /* width: 300px;
-  height: 300px; */
-  /* border-radius: 20px; */
-  /* background: radial-gradient(circle at top left, #fbff00, #ff0000); */
   background: radial-gradient(circle at top left, #fff200, #ff00d9);
-  /* box-shadow: 0 0 30px rgba(251, 255,3), 0 0 80px rgba(255, 0, 3), 0 0 880px rgb(255, 0, 242); */
   animation: auroraGlow 3.5s ease-in-out infinite;
   transition: transform 7.6s ease;
 }
 
-
-
-/* .ai-aurora:hover {
-  transform: scale(1.05);
-} */
 
 @keyframes auroraGlow {
 
@@ -241,7 +273,7 @@ body {
   /* width: 300px;
   height: 300px; */
   /* border-radius: 20px; */
-  background: radial-gradient(circle at top left, #ffef09, #ff0000);
+  background: radial-gradient(circle at top left, #ffef09, #db0000);
   /* background: radial-gradient(circle at top left, #00ffe0, #8a00ff); */
   box-shadow: 0 0 30px rgba(251, 255, 0, 0.3), 0 0 80px rgba(255, 0, 0, 0.3);
   animation: auroraGlow 6s ease-in-out infinite;

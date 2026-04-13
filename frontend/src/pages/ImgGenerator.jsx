@@ -1,22 +1,23 @@
 import React from "react";
 import { useMediaQuery } from "react-responsive";
-import { imageFileResizer } from "react-image-file-resizer";
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
-import { useUser, SignInButton } from "@clerk/clerk-react";
-import { IoIosClose } from "react-icons/io";
+import { SignInButton } from "@clerk/clerk-react";
 
 import logo from '../assets/logo-ai.webp';
 import LoadingFrame from "../assets/LoadingFrame.gif";
 import ImageLoading from "../assets/Image-loading.webp";
 import animatedLogo from "../assets/animation-lottie.gif";
+import { Images2 } from "../assets/index2.jsx";
 
 import { FaDownload, FaArrowRight } from "react-icons/fa";
+import { PiUserCirclePlusFill } from "react-icons/pi";
+import { IoIosClose } from "react-icons/io";
 
 import PromptBox from "../components/PromptBox";
 
 export const ImageGen = () => {
   // Pass your prompt to the hook
-  const { user } = useUser();
   const [Prompt, setPrompt] = React.useState("");
   const [imageUrl, setImageUrl] = React.useState("");
   const [tiggedSignInButton, setTriggedSignInButton] = React.useState(false);
@@ -32,9 +33,41 @@ export const ImageGen = () => {
   const isTab2 = useMediaQuery({ maxWidth: 1332 });
   const isTab3 = useMediaQuery({ maxWidth: 1173 });
   const isTab4 = useMediaQuery({ maxWidth: 501 });
-  const isMobile = useMediaQuery({ maxWidth: 597 });
+  const isMobile = useMediaQuery({ maxWidth: 767 });
   const Image_Type = ['Anime', 'Realistic', 'Cinematic', '3D', 'Painting', 'Ghibli'];
-  var l = loading;
+
+  const ImageDemonstration = [
+    {
+      ImageType: "3D",
+      Image: Images2._3D,
+      Description: "A high-fidelity, three-dimensional masterpiece featuring a mechanical butterfly with iridescent, translucent wings made of layered polymer glass. The creature is perched atop a glowing, levitating core of liquid chrome that ripples with realistic fluid physics and high-gloss reflections. Every gear and micro-joint of the butterfly is rendered with intricate mechanical detail. The lighting setup uses multiple soft-box sources to create a sophisticated \"rim light\" effect, while deep ambient occlusion shadows define the tight spaces between the moving parts. The entire scene is set against a dark, minimalist studio background, ray-traced refractions, and a professional."
+    },
+    {
+      ImageType: "Ghibli",
+      Image: Images2.Gihbli,
+      Description: "A breathtakingly lush valley viewed from a grassy hilltop, where a fleet of small, propeller-driven wooden airships floats lazily toward a distant, cloud-wrapped castle. The grass is a vibrant, hand-painted emerald green, swaying in a gentle breeze that carries scattered pink flower petals across the frame. Towering \"cumulus\" clouds with soft, rounded edges dominate a brilliant sapphire sky, while the sun casts a warm, golden-hour glow that softens the entire landscape. The aesthetic is purely nostalgic, defined by whimsical character and the unmistakable peace of a rural, magical world."
+    },
+    {
+      ImageType: "Anime",
+      Image: Images2.Anime,
+      Description: "A high-octane action sequence frozen in time, featuring a protagonist mid-dash through a rain-slicked Neo-Tokyo street. Their eyes are wide and glowing with blue spiritual energy, while jagged bolts of electricity arc from their hands, illuminating the dark, cel-shaded environment. Bold, thick ink outlines define the character's silhouette against a background of blurred neon signs and exploding debris. The color palette is hyper-saturated with magentas and electric cyans, using dramatic speed lines and particle effects to convey a sense of explosive movement and supernatural power."
+    },
+    {
+      ImageType: "Painting",
+      Image: Images2.Painting,
+      Description: "A heavy-textured oil painting of an ancient, gnarled oak tree standing alone in a misty autumn field at twilight. The canvas is thick with visible \"impasto\" brushwork, where the paint has been layered with a palette knife to create physical ridges on the bark and golden leaves. Rich, earthy tones of burnt sienna and deep umber bleed into a soft, foggy background rendered in delicate, hazy watercolor washes. This piece emphasizes the tactile, handmade nature of art, where every stroke is an intentional expression of mood, light, and timeless classical technique."
+    },
+    {
+      ImageType: "Cinematic",
+      Image: Images2.Cinematic,
+      Description: "A wide 2.39:1 anamorphic shot of a lone astronaut standing on the edge of a colossal, crystalline crater on a dark moon. The only light source is the harsh, reflected glow of a nearby ringed planet, creating a dramatic \"rim light\" effect that outlines the astronaut’s silhouette against the pitch-black sky. Subtle lens flares, a slight film-grain texture, and a moody teal-and-charcoal color grade give the scene a high-budget sci-fi aesthetic. The composition uses a deep depth of field to emphasize the terrifyingly vast scale of the alien landscape and the isolation of the journey."
+    },
+    {
+      ImageType: "Realistic",
+      Image: Images2.Realistic,
+      Description: " An ultra-macro photograph of a ruby-throated hummingbird frozen in mid-air with staggering, high-fidelity detail. Every microscopic barbule of its feathers, the moisture on its beak, and the individual pollen grains on the flower are visible with pin-sharp clarity. Natural, diffused sunlight creates realistic \"catchlights\" in its tiny black eye, while a creamy \"bokeh\" background separates the lifelike subject from the lush, green garden."
+    }
+  ]
 
   const handleDownload = () => {
     const img = new Image();
@@ -84,9 +117,9 @@ export const ImageGen = () => {
 
 
   return (
-    <div className="relative">
+    <div className="pt-4 pb-30 mt-20 ">
 
-      <motion.div style={{ textAlign: "center" }} className=" flex md:my-[2%] justify-center items-center" >
+      <motion.div style={{ textAlign: "center" }} className=" flex md:my-[2%] md:px-2 px-1 justify-center items-center" >
         {/* {console.log(imageUrl)} */}
 
 
@@ -96,7 +129,7 @@ export const ImageGen = () => {
           exit={{ y: -300, opacity: 0 }}
           viewport={{ once: true }} // Ensures animation runs only once
           transition={{ type: "spring", bounce: 0.1, visualDuration: 0, duration: 0.1 }}
-          className={` m-2 rounded-[2.5em] md:rounded-[3em] flex overflow-x2 z-1 shadow-2xl w-full duration-500 md:w-[95%] md:py-3 md:px-3 md:gap-3 py-2.5 px-2 bg-white border-red-500/85 /border `} >
+          className={` m-2 rounded-[2.5em] md:rounded-[3em] flex overflow-x z-1 shadow-2xl w-full duration-500 md:p-3 p-1.5 bg-white border-red-500/85 /border relative `} >
           {/* <h2 className="flex justify-center mb-6 font-extrabold text-4xl
          ">AI Generated Image</h2> */}
           <div className={`p-1 flex flex-1/2 max-h-full flex-col md:flex-row md:justify-start items-center md:items-start w-full gap-4`} style={{ border: "none" }} >
@@ -146,11 +179,19 @@ export const ImageGen = () => {
                           <div className="w-full flex justify-center  items-center flex-col relative ">  <img src={animatedLogo} className="w-50 h-50" />
                             <p className="text-red-600 text-2xl absolute bottom-0 font-extrabold ">Error</p>
                           </div>
+                          {
 
-                          <p className="w-full mt-2 px-2 py-1 md:text-[1.2vw] text-sm flex "><p className="text-yellow-500">Code</p><p className="pl-8 pr-2.5 font-extrabold text-yellow-500">:</p><p> {error.Code}</p></p>
-                          <span className="w-full py-1 md:text-[1.2vw] text-sm flex "><p className="text-yellow-500">Message</p><p className="pl-3 pr-3 font-extrabold text-yellow-500">:</p><p> {error.Message}</p></span>
-                          <span className="w-full py-1 md:text-[1.2vw] text-sm flex "><p className="text-yellow-500">Message</p><p className="pl-3 pr-3 font-extrabold text-yellow-500">:</p><p> {error.Message}</p></span>
+                            error.error?.error?.status ?
 
+                              <>
+                                <p className="w-full mt-2 px-2 py-1 md:text-[1.2vw] text-sm flex "><p className="text-yellow-500">Code</p><p className="pl-8 pr-2.5 font-extrabold text-yellow-500">:</p><p> 402 - {error.Code} {`(Credits)`}</p></p>
+                                <span className="w-full py-1 md:text-[1.2vw] text-sm flex "><p className="text-yellow-500">Message</p><p className="pl-3 pr-3 font-extrabold text-yellow-500">:</p><p> {error.Message}</p></span>
+                                <span className="w-full py-1 md:text-[1.2vw] text-sm flex "><p className="text-yellow-500">Note</p><p className="pl-10 pr-3 font-extrabold text-yellow-500">:</p><p> Fund will be reallocated after 24 Hours and the allocation fund is managed and allocated by puter.js </p></span>
+                              </>
+                              :
+                              <pre className="text-wrap mt-10">{JSON.stringify(error.error)}</pre>
+
+                          }
                           {/* <div onClick={handleDownload} className="absolute bottom-0 right-0 md:m-5 m-2 z-300 bg-red-600 shadow-sm shadow-black/22  cursor-pointer hover:bg-red-800 rounded-full p-3 duration-500 " >
                           <FaDownload className="w-5 h-8.5 mx-1.5 text-white" /> </div> */}
                         </div>
@@ -162,7 +203,7 @@ export const ImageGen = () => {
                   :
 
                   <div className="w-full h-full relative">
-                    {loading && <><div className="flex justify-center items-center md:h-full md:w-[40vw] w-[94vw] h-[345px] md:rounded-4xl bg-linear-to-r from-red-400/35 to-yellow-200/65 animate-pulse rounded-3xl "> <img src={ImageLoading} className=" h-[255px] w-[235px] rounded-4xl " /></div>
+                    {loading && <><div className="flex justify-center items-center md:h-full md:w-full h-[345px] md:rounded-4xl bg-linear-to-r from-red-400/35 to-yellow-200/65 animate-pulse rounded-3xl "> <img src={ImageLoading} className=" h-[255px] w-[235px] rounded-4xl " /></div>
                     </>} {/*<span style={{ border: "none" }} className=" absolute z-1 top-1/2 left-[45%] border-0 bg-gray-400">Loading ... </span>*/}
 
                     {!loading &&
@@ -190,53 +231,121 @@ export const ImageGen = () => {
                   exit={{ opacity: 0, scale: 0 }}
                   viewport={{ once: true }} // Ensures animation runs only once
                   transition={{ type: "spring", bounce: 0.1, visualDuration: 0.3, duration: 0.3 }}
-                  className="md:h-full  md:w-[40vw] w-[94vw]  h-[345px] flex-col flex justify-center rounded-4xl items-center bg-linear-to-r from-red-500/23 to-yellow-400/25  ">
+                  className="md:h-full w-full aspect-square/ h-[345px] flex-col flex justify-center rounded-4xl items-center bg-linear-to-r from-red-500/23 to-yellow-400/25  ">
                   <img src={logo} className="  md:w-88 md:h-80 my-[2%] w-80 h-65" />
-                  <span className="md:text-xl text-lg font-bold opacity-35 text-red-500 mb-10">Bring your thoughts into Reality</span>
+                  <span className="md:text-xl text-lg font-bold opacity-35 text-red-500 mb-10 px-4">Bring your thoughts into Reality</span>
                 </motion.div>}
             </div>
 
           </div>
+
+
+          <AnimatePresence>
+            {tiggedSignInButton &&
+              <div
+
+                className=" absolute rounded-[2.5em] md:rounded-[3em] shadow-2xl duration-500  w-full z-5 inset-0 h-full flex justify-center items-center ">
+
+                <div
+                  className=" backdrop-blur-sm bg-black/2 w-full h-full flex justify-center items-center rounded-[2.5em] md:rounded-[3em] px-3 ">
+
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.4, visualDuration: 0.4, ease: "easeInOut" }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    ref={signInButtonRef}
+                    key="signup"
+                    className="relative bg-white flex-col flex justify-center items-center rounded-[2.5em] py-2 px-5 shadow-2xl pt-15">
+                    <IoIosClose onClick={() => setTriggedSignInButton(false)} className="absolute w-10 h-10 right-4 top-4 text-red-600 hover:text-white cursor-pointer p-1 rounded-full bg-red-300/45 hover:bg-red-500/88 duration-300" />
+                    <PiUserCirclePlusFill style={{ fill: "url(#yellow-red-gradient)" }}
+                      className={`w-38 h-35 /text-yellow-300`} />
+                    <div className="px-5 text-lg my-3 mb-4 text-center"> <b className="text-red-400">SignUp / SignIn</b> to Access & Generate Images </div>
+                    <SignInButton
+                      className={` group hover:duration-830 transition pr-8 mx-1.5 my-3.5 p-3 text-white text-md cursor-pointer font-bold hover:bg-linear-to-r  hover:from-red-500 hover:to-yellow-500 hover:text-white px-6 py-3 rounded-4xl flex justify-center items-center pl-8 mr-2 bg-red-500  `}>
+                      <span>
+                        Get Start
+                        <FaArrowRight className='inline-block ml-3 transition-all -tanslate-x-3 group-hover:translate-x-1.5 group-hover:scale-105 ' />
+                      </span>
+                    </SignInButton>
+                  </motion.div>
+                </div>
+              </div>
+
+            }
+          </AnimatePresence >
+
         </motion.div>
 
       </motion.div>
-      <AnimatePresence>
-        {tiggedSignInButton &&
-          <div
 
-            className=" absolute w-full z-5 top-0 h-full flex justify-center items-center md:px-8 px-0 py-2 ">
-            <div
-              className=" backdrop-blur-sm bg-black/2 w-full h-full flex justify-center items-center rounded-[2.5em] md:rounded-[3em] px-3 ">
+      <div className="px-5 w-full md:pt-30 pt-20">
 
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, visualDuration: 0.4, ease: "easeInOut" }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                ref={signInButtonRef}
-                key="signup"
-                className="relative bg-white flex-col flex justify-center items-center rounded-[2.5em] py-2 px-5 shadow-2xl pt-15">
-                <IoIosClose onClick={() => setTriggedSignInButton(false)} className="absolute w-10 h-10 right-4 top-4 text-red-600 cursor-pointer p-1 rounded-full bg-red-300/45 hover:bg-red-300/35 duration-300" />
-                <div className="px-5 text-lg my-3 mb-4"> <b className="text-red-400">SignUp / SignIn</b> to Access & Generate Images </div>
-                <SignInButton
-                  className={`hover:duration-830 transition pr-8 mx-1.5 my-3.5 p-3 text-white text-md cursor-pointer font-bold hover:bg-gradient-to-r  hover:from-red-500 hover:to-yellow-500 hover:text-white px-6 py-3 rounded-4xl flex justify-center items-center pl-8 mr-2 bg-red-500  `}>
-                  <span>
-                    Get Start
-                    <FaArrowRight className='inline-block ml-3.5 transition-all ' />
-                  </span>
-                </SignInButton>
-              </motion.div>
-            </div>
-          </div>
+        <motion.div initial={{ opacity: 0, y: 250 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ type: "spring", bounce: 0.1, visualDuration: 0.6, duration: 0.6 }} className=" bg-white mt-10 mb-8 w-full flex justify-center py-4 text-red-500/88 rounded-full  items-center text-center md:text-[5vw] text-[8.5vw] font-extrabold ">
+          Pick Your Vision
+        </motion.div>
+      </div>
+      <div className="px-5 w-full flex flex-col gap-15 md:pt-20 pt-5 ">
+        {ImageDemonstration.map((key, index) => {
+          return (
+            <motion.div
+              initial={{ opacity: 0, y: 250 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -250 }}
+              viewport={{ once: true }} // Ensures animation runs only once
+              transition={{ type: "spring", bounce: 0.1, visualDuration: 0.6, duration: 0.6 }}
+              key={index}
+              className="w-full grid md:grid-cols-2 grid-cols-1 md:rounded-[4em] rounded-[3em] bg-white md:p-5 p-2 ">
 
-        }
-      </AnimatePresence >
-      {/* {
-  <div className=" absolute bg-teal-200 z-5 bottom-0 right-1 h-[30%] flex justify-center items-center">
-                  <p>Note : The credits will be allocated by puter.js on your puter.js account creation</p>
+              {!isMobile
+                ?
+                index === 0 ?
+                  <>
+                    <div className="w-full flex justify-center items-center aspect-[1/0.8] h-full shrink-0 ">
+                      <img src={key.Image} className="w-full h-full rounded-[2.5em] md:rounded-[3.5em] " alt={key.ImageType} />
+                    </div>
+                    <div className="flex-1/2 w-full md:px-8 px-4 md:py-6 py-0 ">
+                      <div className="w-full md:text-[4vw] text-[6vw] md:py-[1vw] pt-3.5 pb-2 text-center text-black/66 ">{key.ImageType}</div>
+                      <div className="w-full md:text-[1.3vw] text-[3vw] text-black/55 ">{key.Description}</div>
+                    </div>
+                  </>
+                  :
+                  index % 2 == 0 ?
+                    <>
+                      <div className="w-full flex justify-center items-center aspect-[1/0.8] h-full shrink-0 ">
+                        <img src={key.Image} className="w-full h-full rounded-[2.5em] md:rounded-[3.5em] " alt={key.ImageType} />
+                      </div>
+                      <div className="flex-1/2 w-full md:px-8 px-4 md:py-6 py-0 ">
+                        <div className="w-full md:text-[4vw] text-[6vw] md:py-[1vw] pt-3.5 pb-2 text-center text-black/66 ">{key.ImageType}</div>
+                        <div className="w-full md:text-[1.3vw] text-[3vw] text-black/55 ">{key.Description}</div>
+                      </div>
+                    </>
+                    :
+                    <>
 
-  </div>
-} */}
+                      <div className="flex-1/2 w-full md:px-8 px-4 md:py-6 py-0 ">
+                        <div className="w-full md:text-[4vw] text-[6vw] md:py-[1vw] pt-3.5 pb-2 text-center text-black/66 ">{key.ImageType}</div>
+                        <div className="w-full md:text-[1.3vw] text-[3vw] text-black/55 ">{key.Description}</div>
+                      </div>
+                      <div className="w-full flex justify-center items-center aspect-[1/0.8] h-full shrink-0 ">
+                        <img src={key.Image} className="w-full h-full rounded-[2.5em] md:rounded-[3.5em] " alt={key.ImageType} />
+                      </div>
+                    </>
+                :
+                <>
+                  <div className="w-full flex justify-center items-center h-full aspect-square shrink-0 ">
+                    <img src={key.Image} className="w-full h-full  /shrink-0 rounded-[2.5em] md:rounded-[3.5em] " alt={key.ImageType} />
+                  </div>
+                  <div className="flex-1/2 w-full md:px-8 px-6 md:py-6 pb-8 ">
+                    <div className="w-full md:text-[4vw] text-[6vw] md:py-[1vw] pt-3.5 pb-2 text-center text-black/66 ">{key.ImageType}</div>
+                    <div className="w-full md:text-[1.3vw] text-[3vw] text-black/55 ">{key.Description}</div>
+                  </div>
+                </>
+              }
+            </motion.div>
+          )
+        })}
+      </div>
     </div >
   );
 

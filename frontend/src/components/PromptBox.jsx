@@ -7,6 +7,9 @@ import OpenRouter from "../config/OpenRouter.jsx";
 import GA from '../assets/logo-ai.webp'
 import GA_prompt from '../assets/logo-ai.webp'
 import { motion, AnimatePresence } from "framer-motion";
+import { LuImageUp } from "react-icons/lu";
+import { MdClose } from "react-icons/md";
+import { RiImageAiFill } from "react-icons/ri";
 import { Sketch, Wheel } from '@uiw/react-color';
 import { RiColorFilterAiLine } from "react-icons/ri";
 import Resizer from "react-image-file-resizer";
@@ -145,6 +148,8 @@ const PromptBox = ({
   const { id, email } = useAppContext();
   const [input, setInput] = useState("");
   const [input2, setInput2] = useState("");
+  const [input_image, setInput_image] = useState(null);
+  const [fileType, setFileType] = useState(null);
   const [selected, setSelected] = useState(null);
   const [openColorPicker, setOpenColorPicker] = useState(false);
   const [colour, setColour] = useState("#ffff");
@@ -233,7 +238,7 @@ const PromptBox = ({
         // await puter.auth.signIn({ attempt_temp_user_creation: true });
 
         // console.log((selected ? selected + "style , " : "") + Prompt + (on ? " with Image Color Scheme " + colour : "") + (imageResolution.w === "auto" ? "" : ", and encode the aspect ratio of image with " + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image"));
-        const imageElement = await puter.ai.txt2img(((selected ? selected + " style , " : "") + Prompt + (on ? " with Image Color Scheme " + colour : "") + (imageResolution.w === "auto" ? "" : ", and encode the aspect ratio of image with " + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image")), { model: selectedModel.value });
+        const imageElement = await puter.ai.txt2img(((selected ? selected + " style , " : "") + Prompt + (on ? " with Image Color Scheme " + colour : "") + (imageResolution.w === "auto" ? "" : ", and encode the aspect ratio of image with " + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image")), { model: selectedModel.value, input_image: input_image ? input_image.split(',')[1] : null , input_image_mime_type: fileType ? fileType : null });
         setInput2((selected ? selected + "style , " : "") + Prompt + (on ? " with Image Color Scheme " + colour : "") + (imageResolution.w === "auto" ? "" : ", and encode the aspect ratio of image with " + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image"));
         if (id) {
           const CloudinaryImageUrl = await uploadImage(imageElement);
@@ -241,6 +246,8 @@ const PromptBox = ({
         setImageUrl(imageElement);
         setSubmit(false);
         setLoading(false);
+        setInput_image(null);
+        setFileType(null);
       }
 
       catch (error) {
@@ -257,7 +264,15 @@ const PromptBox = ({
     }
   }
 
+  const RefImageUpload = (file) => {
+    setFileType(file.type);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setInput_image(reader.result); 
+    };
+    reader.readAsDataURL(file);
 
+  }
 
 
 
@@ -274,40 +289,52 @@ const PromptBox = ({
         transition={{ bounce: 0.25, visualDuration: 0.235, duration: 0.2 }}
 
       >
-        <textarea
-          ref={textareaRef}
-          onInput={handleInput}
-          style={{
+        <div className="relative">
 
-            minHeight: "265px",
-            maxHeight: "200px",
-            overflowY: "auto",
+          <textarea
+            ref={textareaRef}
+            onInput={handleInput}
+            style={{
 
-          }}
-          value={Prompt}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey && Prompt.trim() !== "") {
+              minHeight: "265px",
+              maxHeight: "200px",
+              overflowY: "auto",
 
-              e.preventDefault(); // Prevent default Enter key behavior
-              setPrompt(e.target.value);
-              GenerateImage();
+            }}
+            value={Prompt}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey && Prompt.trim() !== "") {
+
+                e.preventDefault(); // Prevent default Enter key behavior
+                setPrompt(e.target.value);
+                GenerateImage();
 
 
-            }
-          }}
-          className={`backdrop-blur-3xl md:w-full w-full rounded-4xl resize-none outline-0 p-6
+              }
+            }}
+            className={`backdrop-blur-3xl md:w-full w-full rounded-4xl resize-none outline-0 p-6
           bg-black/8
           md:text-lg ${!Prompt && "text-black/44"
-            }`}
-          onChange={(e) => {
-            setPrompt(e.target.value);
-          }}
-          placeholder="Enter your Prompt"
-        />
+              }`}
+            onChange={(e) => {
+              setPrompt(e.target.value);
+            }}
+            placeholder="Enter your Prompt"
+          />
+          <AnimatePresence >
+            {input_image &&
+                <motion.div key={"Uploaded"} initial={{ scale: .8, opacity: 0.5, x: 30 }} viewport={{ once: true }} whileInView={{ opacity: 1, scale: 1, x: 0 }} exit={{ opacity: 0, scale: .8, x: -30 }} transition={{ duration: .1 }} className={` text-sm duration-400 flex justify-center items-center absolute bottom-4 right-3 px-4 h-10.5 border border-green-400 bg-green-200 rounded-4xl`}>
+                 <img src={input_image}/> {console.log(input_image)}<RiImageAiFill className={`text-green-500 w-5.5 h-5.5 mr-2 `} /> <p className="text-blue-500"><div className="flex justify-center items-center gap-2 text-green-500 select-none ">Uploaded <MdClose onClick={(e) => { e.stopPropagation(); setInput_image(null) }} className="bg-green-300 w-5.5 h-5.5 hover:text-green-50 hover:bg-green-500 duration-300 text-green-500 rounded-full p-1 cursor-pointer" /> </div> </p>
+                </motion.div>
 
-
-
-
+            }{!input_image &&
+              <motion.label key={"Upload"} initial={{ scale: .4, opacity: 0.5 }} viewport={{ once: true }} whileInView={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: .4 }} transition={{ duration: .1 }} className={` text-sm duration-400 flex justify-center items-center absolute bottom-4 right-3 px-4 h-10.5 bg-zinc-300 rounded-4xl cursor-pointer`}>
+                <LuImageUp className={` text-zinc-500 w-5.5 h-5.5 mr-2  `} /> <p className="text-zinc-500"> Upload </p>
+                <input type={"file"} onChange={(e) => RefImageUpload(e.target.files[0])} className="hidden" />
+              </motion.label>
+            }
+          </AnimatePresence>
+        </div>
 
 
         <div className={` `}>
@@ -345,7 +372,6 @@ const PromptBox = ({
 
           <div className={`flex justify-center items-center w-full `}>
             <div className={` relative flex flex-wrap justify-center items-center `}>
-
               {
                 resolution.map((size, index) => {
                   return (
@@ -407,12 +433,9 @@ const PromptBox = ({
                         >
                           <div
                             className={`${on ? "translate-x-4.5 bg-red-500/45" : "translate-x-0.5 bg-gray-400/55"} rounded-full flex duration-200 transition-all  w-5 h-5`}
-
                           />
                         </button></div>
                       <div className={`absolute right-12 text-sm bottom-2 bg-linear-to-r ${on ? "from-red-500 to-yellow-300 duration-500 transition-all bg-clip-text text-transparent" : "text-gray-400"}`}>Apply</div>
-
-
                     </motion.div>
                   }
                 </AnimatePresence>
@@ -430,7 +453,6 @@ const PromptBox = ({
         <div
           className={` w-full h-full select-none grow flex flex-row pr-4 justify-center items-center`}>
           {
-
             <motion.div
               initial={{ opacity: 0, scale: 0, x: 335 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
@@ -439,7 +461,6 @@ const PromptBox = ({
               transition={{ type: "spring", bounce: 0.155, visualDuration: 0.235, duration: 0.14 }}
               className={`mt-3 pointer-default shrink-0  py-1.5  flex ${isMobile ? "border w-15 ml-2 py-2.5 rounded-full" : "ml-2 w-45 rounded-3xl"} text-[16px]  border-neutral-500/35 text-neutral-500/85  flex-nowrap h-full items-center justify-center`}>
               <motion.img
-
                 initial={{ opacity: 0, scale: 0, x: 335 }}
                 animate={{ opacity: 1, scale: 1, x: 0 }}
                 exit={{ opacity: 0, scale: 0, x: -300 }}
@@ -490,9 +511,9 @@ const PromptBox = ({
                 exit={{ opacity: 1, y: -100, x: 155 }}
                 viewport={{ once: true }} // Ensures animation runs only once
                 transition={{ type: "easeInOut", visualDuration: 0.1, duration: 0.1 }}
-                className={` z-1  ${showMenu && "md:-translate-y-34 md:translate-x-1.5 -translate-x-43 -translate-y-40"} absolute text-sm -left-25 duration-500 transition-all -mx-15 mb-5 w-88 text-left bg-white border-black/15 border rounded-xl shadow-lg `}
+                className={` z-1  ${showMenu && "md:-translate-y-26 md:translate-x-1.5 -translate-x-43 -translate-y-40"} absolute text-sm -left-25 duration-500 transition-all -mx-15 mb-5 w-88 text-left bg-white border-black/15 border rounded-xl shadow-lg `}
               >
-                <li className=" flex justify-center items-center rounded-t-xl border-b-2 bg-red-500 font-extrabold text-white w-full">
+                <li key={"Names"} onClick={(e) => e.stopPropagation()} className=" flex justify-center items-center rounded-t-xl border-b-2 bg-red-500 font-extrabold text-white w-full">
                   <div className={`w-full flex justify-center items-center py-3`}>Models</div><div className={`flex w-[50%] justify-center items-center pl-10 px-1 py-3 bg-linear-to-r from-red-500/88 to-yellow-400 via-yellow-400   rounded-tr-xl`}>Credits</div>
                 </li>
                 {modelList.map((model, index) => (

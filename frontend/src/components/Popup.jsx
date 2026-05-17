@@ -57,7 +57,7 @@ const Popup = ({ type, open, index, setIndex, setOpen, Content, onSuccess, icon,
                                     onChange={(e) => { setNewImageName(e.target.value) }}
                                     value={newImageName}
                                     placeholder={"Enter the New Name"}
-                                    className="bg-black/5 w-full rounded-xl h-13 focus:ring-2 ring-blue-400 duration-300 caret-blue-500 outline-0 px-3 teext-[10px] placeholder:text-sm"
+                                    className="bg-black/5 md:min-w-110 min-w-auto w-full rounded-xl h-13 focus:ring-2 ring-blue-400 duration-300 caret-blue-500 outline-0 px-3 teext-[10px] placeholder:text-sm"
                                     onKeyDown={(e) => {
                                         if (e.key === "Enter" && !e.shiftKey && newImageName.trim() !== "") {
                                             e.preventDefault();

@@ -37,7 +37,9 @@ const PromptBox = ({
   isTab4,
   isMobile,
   setFilename,
-  setTriggedSignInButton
+  setTriggedSignInButton,
+  PuterLoginStatus,
+  setTriggedPuterSignInButton
 }) => {
 
 
@@ -144,7 +146,6 @@ const PromptBox = ({
     { label: "16:9", w: 1280, h: 720 },
   ]
 
-  const PuterLoginStatus = puter.auth.isSignedIn();
   const { id, email } = useAppContext();
   const [input, setInput] = useState("");
   const [input2, setInput2] = useState("");
@@ -224,6 +225,7 @@ const PromptBox = ({
   const GenerateImage = async () => {
 
     if (id) {
+      if (!PuterLoginStatus) { setTriggedPuterSignInButton(true); return; }
       setButton(true);
       setLoading(true);
       setImageUrl(null);

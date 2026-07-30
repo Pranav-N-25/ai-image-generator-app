@@ -81,10 +81,13 @@ const NavBar = () => {
     <>
       <AnimatePresence>
         {(message && user) &&
-          <motion.div key="notification" initial={{ opacity: 0, y: -180, scale: 0.7 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -10, scale: 0.7 }} transition={{ duration: 0.3 }} className="absolute top-28 md:top-25 z-20 w-full flex justify-center items-center px-8 ">
-            <div className="relative w-fit ">
-              <IoIosClose onClick={() => { setMessage(false) }} className="absolute w-8 h-8 -right-2 -top-2 bg-red-600 cursor-pointer p-1 rounded-full text-white hover:bg-red-700 duration-300" />
-              <div className="bg-white text-black/55 px-8 py-3 rounded-3xl shadow-2xl w-fit flex justify-center items-center font-bold ">  <IoNotifications className="w-10 h-10 mr-3 text-yellow-300 p-2 rounded-full bg-yellow-100 shrink-0 " /> You have successfully loggedin to SAAI Website , {user.fullName} </div>
+          <motion.div key="notification" initial={{ opacity: 0, y: -180, scale: 0.7 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -10, scale: 0.7 }} transition={{ duration: 0.3 }} className="absolute top-28 md:top-25 z-20 w-full flex justify-center items-center md:px-8 px-4 ">
+            <div className="relative w-fit">
+              <IoIosClose onClick={() => { setMessage(false) }} className="absolute w-8 h-8 -right-3 -top-4 bg-red-600 cursor-pointer p-1 rounded-full text-white hover:bg-red-700 duration-300" />
+            <div className="bg-white rounded-3xl shadow-2xl w-fit flex px-7 py-2 justify-between items-center">
+              <IoNotifications className="w-10 h-10 mr-3 text-yellow-300 p-2 rounded-full bg-yellow-100 shrink-0  " />
+              <div className=" text-black/55  md:text-base text-xs px-1 py-3 flex justify-center items-center font-bold "> You have successfully loggedin to SAAI Website , {user.fullName} </div>
+            </div>
             </div>
           </motion.div>
         }

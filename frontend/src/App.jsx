@@ -24,7 +24,14 @@ const App = () => {
           <stop stopColor="#ff0000" offset="80%" /> {/* red-600 */}
         </linearGradient>
       </svg>
-      
+
+      <svg width="0" height="0" className="absolute">
+        <linearGradient id="violet-pink-gradient" x1="100%" y1="100%" x2="0%" y2="0%">
+          <stop stopColor="#f20089" offset="0%" /> {/* red-600 */}
+          <stop stopColor="#8900f2" offset="80%" /> {/* yellow-400 */}
+        </linearGradient>
+      </svg>
+
       <Outlet />
 
       <Footer />

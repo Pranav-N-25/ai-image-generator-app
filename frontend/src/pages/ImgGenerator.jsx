@@ -12,6 +12,7 @@ import { Images2 } from "../assets/index2.jsx";
 
 import { FaDownload, FaArrowRight } from "react-icons/fa";
 import { PiUserCirclePlusFill } from "react-icons/pi";
+import { PiUserCircleGearFill } from "react-icons/pi";
 import { IoIosClose } from "react-icons/io";
 
 import PromptBox from "../components/PromptBox";
@@ -21,6 +22,8 @@ export const ImageGen = () => {
   const [Prompt, setPrompt] = React.useState("");
   const [imageUrl, setImageUrl] = React.useState("");
   const [tiggedSignInButton, setTriggedSignInButton] = React.useState(false);
+  const [tiggedPuterSignInButton, setTriggedPuterSignInButton] = React.useState(false);
+  const PuterLoginStatus = puter.auth.isSignedIn();
   const [resizedUrl, setResizedUrl] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [submit, setSubmit] = React.useState(false);
@@ -160,6 +163,8 @@ export const ImageGen = () => {
               setFilename={setFilename}
               tiggedSignInButton={tiggedSignInButton}
               setTriggedSignInButton={setTriggedSignInButton}
+              setTriggedPuterSignInButton={setTriggedPuterSignInButton}
+              PuterLoginStatus={PuterLoginStatus}
             />
 
 
@@ -268,6 +273,39 @@ export const ImageGen = () => {
                         <FaArrowRight className='inline-block ml-3 transition-all -tanslate-x-3 group-hover:translate-x-1.5 group-hover:scale-105 ' />
                       </span>
                     </SignInButton>
+                  </motion.div>
+                </div>
+              </div>
+
+            }
+            {tiggedPuterSignInButton &&
+              <div
+
+                className=" absolute rounded-[2.5em] md:rounded-[3em] shadow-2xl duration-500  w-full z-5 inset-0 h-full flex justify-center items-center ">
+
+                <div
+                  className=" backdrop-blur-sm bg-black/2 w-full h-full flex justify-center items-center rounded-[2.5em] md:rounded-[3em] px-3 ">
+
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.4, visualDuration: 0.4, ease: "easeInOut" }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    ref={signInButtonRef}
+                    key="signup"
+                    className="relative bg-white flex-col flex justify-center items-center rounded-[2.5em] py-2 px-5 shadow-2xl md:pt-15 pt-12">
+                    <IoIosClose onClick={() => setTriggedPuterSignInButton(false)} className="absolute w-10 h-10 right-4 top-4 text-violet-600 hover:text-white cursor-pointer p-1 rounded-full bg-violet-300/45 hover:bg-violet-500/88 duration-300" />
+                    <PiUserCircleGearFill style={{ fill: "url(#violet-pink-gradient)" }}
+                      className={`w-38 h-35 /text-yellow-300`} />
+                    <p></p>
+                    <div className="px-5 md:text-base text-sm md:my-3 my-2 pb-3 md:pb-0 md:mb-4 mb-0 text-center"> <b className="text-violet-400">SignUp / SignIn</b> to Puter.js Account for accessing {!isMobile && <br />} Image Generator Models and for allocating user allowance by puter.js . </div>
+                    <button onClick={() => { puter.auth.signIn(); setTriggedPuterSignInButton(false); } }
+                      className={` group hover:duration-830 transition pr-8 mx-1.5 md:my-3.5 my-1 md:mb-5 mb-3 p-3 text-white text-md cursor-pointer font-bold hover:bg-linear-to-r  hover:from-violet-500 hover:to-pink-500 hover:text-white px-6 py-3 rounded-4xl flex justify-center items-center pl-8 mr-2 bg-violet-500  `}>
+                      <span>
+                        Puter Account
+                        <FaArrowRight className='inline-block ml-3 transition-all -tanslate-x-3 group-hover:translate-x-1.5 group-hover:scale-105 ' />
+                      </span>
+                    </button>
                   </motion.div>
                 </div>
               </div>

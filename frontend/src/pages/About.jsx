@@ -82,7 +82,7 @@ const About = () => {
     {
       name: "SA AI - Image Generator with Multi Model Support",
       description: "A professional-grade AI Image Generator, demonstrating SAAI is a high-performance full-stack web application that empowers users to transform text prompts into high-fidelity AI-generated visuals. Built with the MERN stack and styled using Tailwind CSS, SAAI leverages the Puter.js library to provide a seamless, multi-model generation experience.",
-      link: "https://ai-image-generator-app-psi.vercel.app/",
+      link: "current", /* https://ai-image-generator-app-psi.vercel.app/*/
       details: "https://lnkd.in/gYWB3mUZ",
       logo: logo1,
       poster: SAAI,
@@ -823,10 +823,10 @@ const About = () => {
 
                       {key.link === "current" ?
                         <motion.div initial={isTab ? { opacity: 0, y: -30 } : { opacity: 0, y: 0 }} viewport={{ once: true }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, visualDuration: 0.4, bounce: 0 }}
-                          className=" group flex justify-center items-center rounded-full duration-300 cursor-pointer md:hover:text-white md:hover:font-extrabold md:font-normal font-extrabold text-white md:text-green-500 border border-green-500 hover:bg-green-600 backdrop-blur-3xl md:bg-transparent bg-green-600 px-5 py-4 select-none"
+                          className=" group flex justify-center items-center duration-300 cursor-pointer md:hover:text-white md:hover:font-extrabold md:font-normal md:text-base text-sm rounded-full md:rounded-3xl hover:rounded-4xl font-extrabold text-white md:text-green-500 border border-green-500 hover:bg-green-600 backdrop-blur-3xl md:bg-transparent bg-green-600 md:px-6 md:py-4 px-6 py-3 select-none "
                         >
                           Current Project
-                          <MdPushPin className="md:w-7 md:h-7 w-6 h-6 ml-4 group-hover:rotate-25 duration-300" />
+                          <MdPushPin className="md:w-6 md:h-6 w-5 h-5 md:ml-4 ml-2 group-hover:rotate-25 duration-300" />
                         </motion.div>
                         :
                         <motion.a initial={isTab ? { opacity: 0, y: -30 } : { opacity: 0, y: 0 }} viewport={{ once: true }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, visualDuration: 0.4, bounce: 0 }}

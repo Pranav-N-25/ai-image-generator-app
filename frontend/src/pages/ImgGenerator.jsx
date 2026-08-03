@@ -9,6 +9,7 @@ import LoadingFrame from "../assets/LoadingFrame.gif";
 import ImageLoading from "../assets/Image-loading.webp";
 import animatedLogo from "../assets/animation-lottie.gif";
 import { Images2 } from "../assets/index2.jsx";
+import { createPortal } from 'react-dom';
 
 import { FaDownload, FaArrowRight } from "react-icons/fa";
 import { PiUserCirclePlusFill } from "react-icons/pi";
@@ -23,7 +24,7 @@ export const ImageGen = () => {
   const [imageUrl, setImageUrl] = React.useState("");
   const [tiggedSignInButton, setTriggedSignInButton] = React.useState(false);
   const [tiggedPuterSignInButton, setTriggedPuterSignInButton] = React.useState(false);
-  const PuterLoginStatus = puter.auth.isSignedIn();
+  const [PuterLoginStatus, setPuterLoginStatus] = React.useState(false);
   const [resizedUrl, setResizedUrl] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [submit, setSubmit] = React.useState(false);
@@ -36,8 +37,10 @@ export const ImageGen = () => {
   const isTab2 = useMediaQuery({ maxWidth: 1332 });
   const isTab3 = useMediaQuery({ maxWidth: 1173 });
   const isTab4 = useMediaQuery({ maxWidth: 501 });
+  const isTab5 = useMediaQuery({ maxWidth: 1129 });
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const Image_Type = ['Anime', 'Realistic', 'Cinematic', '3D', 'Painting', 'Ghibli'];
+  const mountNode = document.getElementById('portal-root');
 
   const ImageDemonstration = [
     {
@@ -71,6 +74,8 @@ export const ImageGen = () => {
       Description: " An ultra-macro photograph of a ruby-throated hummingbird frozen in mid-air with staggering, high-fidelity detail. Every microscopic barbule of its feathers, the moisture on its beak, and the individual pollen grains on the flower are visible with pin-sharp clarity. Natural, diffused sunlight creates realistic \"catchlights\" in its tiny black eye, while a creamy \"bokeh\" background separates the lifelike subject from the lush, green garden."
     }
   ]
+
+  React.useEffect(() => setPuterLoginStatus(puter.auth.isSignedIn()))
 
   const handleDownload = () => {
     const img = new Image();
@@ -118,6 +123,33 @@ export const ImageGen = () => {
 
   useClickOutside(signInButtonRef, () => setTriggedSignInButton(false));
 
+  const userDetails = async () => {
+    const response = await puter.auth.getMonthlyUsage();
+    setUserCredits(response.allowanceInfo);
+  }
+  React.useEffect(() => {
+    if (tiggedSignInButton || tiggedPuterSignInButton) {
+      const preventDefault = (e) => {
+        e.preventDefault();
+      };
+
+      window.addEventListener('wheel', preventDefault, { passive: false });
+      window.addEventListener('touchmove', preventDefault, { passive: false });
+      window.addEventListener('keydown', (e) => {
+        if (['ArrowUp', 'ArrowDown', ' ', 'PageUp', 'PageDown'].includes(e.key)) {
+          e.preventDefault();
+        }
+      });
+
+      return () => {
+        window.removeEventListener('wheel', preventDefault);
+        window.removeEventListener('touchmove', preventDefault);
+      };
+    }
+
+  }, [tiggedSignInButton, tiggedPuterSignInButton]);
+
+
 
   return (
     <div className="pt-4 pb-30 mt-20 ">
@@ -132,10 +164,10 @@ export const ImageGen = () => {
           exit={{ y: -300, opacity: 0 }}
           viewport={{ once: true }} // Ensures animation runs only once
           transition={{ type: "spring", bounce: 0.1, visualDuration: 0, duration: 0.1 }}
-          className={` m-2 rounded-[2.5em] md:rounded-[3em] flex overflow-x z-1 shadow-2xl w-full duration-500 md:p-3 p-1.5 bg-white border-red-500/85 /border relative `} >
+          className={` m-2 rounded-[2.5em] md:rounded-[3em] flex overflow-x z-1 shadow-2xl w-full duration-500 md:p-3 p-1.5  ${isTab5 ? "md:mx-10 mx-0" : ""} bg-white border-red-500/85 /border relative `} >
           {/* <h2 className="flex justify-center mb-6 font-extrabold text-4xl
          ">AI Generated Image</h2> */}
-          <div className={`p-1 flex flex-1/2 max-h-full flex-col md:flex-row md:justify-start items-center md:items-start w-full gap-4`} style={{ border: "none" }} >
+          <div className={`p-1 flex flex-1/2 max-h-full h-full ${isTab5 ? "flex-col md:py-3 md:px-2" : "flex-row"} md:justify-start items-center md:items-start w-full gap-4`} style={{ border: "none" }} >
             <PromptBox
               Prompt={Prompt}
               setPrompt={setPrompt}
@@ -163,16 +195,17 @@ export const ImageGen = () => {
               setFilename={setFilename}
               tiggedSignInButton={tiggedSignInButton}
               setTriggedSignInButton={setTriggedSignInButton}
+              tiggedPuterSignInButton={tiggedPuterSignInButton}
               setTriggedPuterSignInButton={setTriggedPuterSignInButton}
               PuterLoginStatus={PuterLoginStatus}
             />
 
 
             {/* {console.log(imageUrl)} */}
-            <div style={{ border: "none" }} className={`overflow-y-visible md:w-[70vw] w-full h-full  grow outline-none `}>
+            <div style={{ border: "none" }} className={`overflow-y-visible  ${isTab5 ? " w-full mx-auto md:w-[65vw]" : "md:w-[65vw]"}  aspect-square h-full outline-none `}>
               {button ?
                 error ?
-                  <ul className=" md:w-[40vw] w-[94vw]  animate-none text-sm whitespace-normal  wrap-break-word md:h-full p-6 md:rounded-4xl bg-linear-to-r  from-red-400/35 to-yellow-200/65 text-wrap overflow-x-scroll rounded-[3em]">
+                  <ul className=" md:w-full animate-none text-sm whitespace-normal wrap-break-word md:h-full p-6 md:rounded-4xl bg-linear-to-r  from-red-400/35 to-yellow-200/65 text-wrap overflow-x-scroll noScroll rounded-[3em]">
 
                     {/*<span className="text-lg font-bold opacity-35 text-red-500 ">{error ? (typeof error === 'object' ? error.error.message ? error.error.message : JSON.stringify(error) ||error.error : error) : ""}</span> JSON.stringify(error) */}
                     <pre className="block whitespace-pre-line text-start h-full">
@@ -207,13 +240,13 @@ export const ImageGen = () => {
 
                   :
 
-                  <div className="w-full h-full relative">
-                    {loading && <><div className="flex justify-center items-center md:h-full md:w-full h-[345px] md:rounded-4xl bg-linear-to-r from-red-400/35 to-yellow-200/65 animate-pulse rounded-3xl "> <img src={ImageLoading} className=" h-[255px] w-[235px] rounded-4xl " /></div>
+                  <div className="h-full w-full relative">
+                    {loading && <><div className="flex justify-center items-center w-full h-full md:rounded-4xl bg-linear-to-r from-red-400/35 to-yellow-200/65 animate-pulse rounded-3xl "> <img src={ImageLoading} className=" h-[255px] w-[235px] rounded-4xl " /></div>
                     </>} {/*<span style={{ border: "none" }} className=" absolute z-1 top-1/2 left-[45%] border-0 bg-gray-400">Loading ... </span>*/}
 
                     {!loading &&
                       <>
-                        <img className="  z-1  md:h-full md:w-[40vw] w-[94vw] h-[345px] border-none rounded-[2em] md:rounded-4xl decoration-0 outline-1 outline-amber-50 "
+                        <img className="  z-1 h-full w-full border-none rounded-[2em] md:rounded-4xl decoration-0 outline-1 outline-amber-50 "
                           src={imageUrl}
                           // key={imageUrl}
                           alt=""
@@ -236,8 +269,8 @@ export const ImageGen = () => {
                   exit={{ opacity: 0, scale: 0 }}
                   viewport={{ once: true }} // Ensures animation runs only once
                   transition={{ type: "spring", bounce: 0.1, visualDuration: 0.3, duration: 0.3 }}
-                  className="md:h-full w-full aspect-square/ h-[345px] flex-col flex justify-center rounded-4xl items-center bg-linear-to-r from-red-500/23 to-yellow-400/25  ">
-                  <img src={logo} className="  md:w-88 md:h-80 my-[2%] w-80 h-65" />
+                  className="h-full w-full flex-col flex justify-center rounded-4xl items-center bg-linear-to-r from-red-500/23 to-yellow-400/25  ">
+                  <img src={logo} className={`  ${isTab5 ? " md:w-[48vw] md:h-[48vw] w-[60%] h-[60%] " : "md:w-[28vw] md:h-[28vw]"} my-[2%] `} />
                   <span className="md:text-xl text-lg font-bold opacity-35 text-red-500 mb-10 px-4">Bring your thoughts into Reality</span>
                 </motion.div>}
             </div>
@@ -245,76 +278,7 @@ export const ImageGen = () => {
           </div>
 
 
-          <AnimatePresence>
-            {tiggedSignInButton &&
-              <div
-
-                className=" absolute rounded-[2.5em] md:rounded-[3em] shadow-2xl duration-500  w-full z-5 inset-0 h-full flex justify-center items-center ">
-
-                <div
-                  className=" backdrop-blur-sm bg-black/2 w-full h-full flex justify-center items-center rounded-[2.5em] md:rounded-[3em] px-3 ">
-
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.4, visualDuration: 0.4, ease: "easeInOut" }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    ref={signInButtonRef}
-                    key="signup"
-                    className="relative bg-white flex-col flex justify-center items-center rounded-[2.5em] py-2 px-5 shadow-2xl pt-15">
-                    <IoIosClose onClick={() => setTriggedSignInButton(false)} className="absolute w-10 h-10 right-4 top-4 text-red-600 hover:text-white cursor-pointer p-1 rounded-full bg-red-300/45 hover:bg-red-500/88 duration-300" />
-                    <PiUserCirclePlusFill style={{ fill: "url(#yellow-red-gradient)" }}
-                      className={`w-38 h-35 /text-yellow-300`} />
-                    <div className="px-5 text-lg my-3 mb-4 text-center"> <b className="text-red-400">SignUp / SignIn</b> to Access & Generate Images </div>
-                    <SignInButton
-                      className={` group hover:duration-830 transition pr-8 mx-1.5 my-3.5 p-3 text-white text-md cursor-pointer font-bold hover:bg-linear-to-r  hover:from-red-500 hover:to-yellow-500 hover:text-white px-6 py-3 rounded-4xl flex justify-center items-center pl-8 mr-2 bg-red-500  `}>
-                      <span>
-                        Get Start
-                        <FaArrowRight className='inline-block ml-3 transition-all -tanslate-x-3 group-hover:translate-x-1.5 group-hover:scale-105 ' />
-                      </span>
-                    </SignInButton>
-                  </motion.div>
-                </div>
-              </div>
-
-            }
-            {tiggedPuterSignInButton &&
-              <div
-
-                className=" absolute rounded-[2.5em] md:rounded-[3em] shadow-2xl duration-500  w-full z-5 inset-0 h-full flex justify-center items-center ">
-
-                <div
-                  className=" backdrop-blur-sm bg-black/2 w-full h-full flex justify-center items-center rounded-[2.5em] md:rounded-[3em] px-3 ">
-
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.4, visualDuration: 0.4, ease: "easeInOut" }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    ref={signInButtonRef}
-                    key="signup"
-                    className="relative bg-white flex-col flex justify-center items-center rounded-[2.5em] py-2 px-5 shadow-2xl md:pt-15 pt-12">
-                    <IoIosClose onClick={() => setTriggedPuterSignInButton(false)} className="absolute w-10 h-10 right-4 top-4 text-violet-600 hover:text-white cursor-pointer p-1 rounded-full bg-violet-300/45 hover:bg-violet-500/88 duration-300" />
-                    <PiUserCircleGearFill style={{ fill: "url(#violet-pink-gradient)" }}
-                      className={`w-38 h-35 /text-yellow-300`} />
-                    <p></p>
-                    <div className="px-5 md:text-base text-sm md:my-3 my-2 pb-3 md:pb-0 md:mb-4 mb-0 text-center"> <b className="text-violet-400">SignUp / SignIn</b> to Puter.js Account for accessing {!isMobile && <br />} Image Generator Models and for allocating user allowance by puter.js . </div>
-                    <button onClick={() => { puter.auth.signIn(); setTriggedPuterSignInButton(false); } }
-                      className={` group hover:duration-830 transition pr-8 mx-1.5 md:my-3.5 my-1 md:mb-5 mb-3 p-3 text-white text-md cursor-pointer font-bold hover:bg-linear-to-r  hover:from-violet-500 hover:to-pink-500 hover:text-white px-6 py-3 rounded-4xl flex justify-center items-center pl-8 mr-2 bg-violet-500  `}>
-                      <span>
-                        Puter Account
-                        <FaArrowRight className='inline-block ml-3 transition-all -tanslate-x-3 group-hover:translate-x-1.5 group-hover:scale-105 ' />
-                      </span>
-                    </button>
-                  </motion.div>
-                </div>
-              </div>
-
-            }
-          </AnimatePresence >
-
         </motion.div>
-
       </motion.div>
 
       <div className="px-5 w-full md:pt-30 pt-20">
@@ -384,6 +348,86 @@ export const ImageGen = () => {
           )
         })}
       </div>
+
+
+      {/* User Login / SignUp for user auth and puter.js */}
+
+
+      {
+        createPortal(
+          <AnimatePresence>
+            {tiggedSignInButton &&
+              <div
+                className=" fixed z-5  duration-500 inset-0 backdrop-blur-2xl bg-black/2 w-full h-full flex justify-center items-center px-3 ">
+
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4, visualDuration: 0.2, ease: "easeInOut" }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  ref={signInButtonRef}
+                  key="signup"
+                  className="relative bg-white flex-col flex justify-center items-center rounded-[2.5em] py-2 px-5 shadow-2xl pt-15">
+                  <IoIosClose onClick={() => setTriggedSignInButton(false)} className="absolute w-10 h-10 right-4 top-4 text-red-600 hover:text-white cursor-pointer p-1 rounded-full bg-red-300/45 hover:bg-red-500/88 duration-300" />
+                  <PiUserCirclePlusFill style={{ fill: "url(#yellow-red-gradient)" }}
+                    className={`w-38 h-35 /text-yellow-300`} />
+                  <div className="px-5 my-3 mb-4 text-center md:text-base text-sm"> <b className="text-red-400">SignUp / SignIn</b> to Access & Generate Images </div>
+                  <SignInButton
+                    className={` group hover:duration-830 transition pr-8 mx-1.5 my-3.5 p-3 text-white text-md cursor-pointer font-bold hover:bg-linear-to-r  hover:from-red-500 hover:to-yellow-500 hover:text-white px-6 py-3 rounded-4xl flex justify-center items-center pl-8 mr-2 bg-red-500  `}>
+                    <span>
+                      Get Start
+                      <FaArrowRight className='inline-block ml-3 transition-all -tanslate-x-3 group-hover:translate-x-1.5 group-hover:scale-105 ' />
+                    </span>
+                  </SignInButton>
+                </motion.div>
+              </div>
+
+            }
+          </AnimatePresence >
+          , mountNode)
+      }
+
+
+      {
+        createPortal(
+
+          <AnimatePresence>
+            {
+              tiggedPuterSignInButton &&
+              <div
+                className=" fixed backdrop-blur-2xl bg-black/2 z-5 inset-0 w-full h-full flex justify-center items-center px-3 ">
+
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4, visualDuration: 0.2, ease: "easeInOut" }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  ref={signInButtonRef}
+                  key="signup"
+                  className="relative bg-white flex-col flex justify-center items-center rounded-[2.5em] py-2 px-5 shadow-2xl md:pt-15 pt-12">
+                  <IoIosClose onClick={() => setTriggedPuterSignInButton(false)} className="absolute w-10 h-10 right-4 top-4 text-violet-600 hover:text-white cursor-pointer p-1 rounded-full bg-violet-300/45 hover:bg-violet-500/88 duration-300" />
+                  <PiUserCircleGearFill style={{ fill: "url(#violet-pink-gradient)" }}
+                    className={`w-38 h-35 /text-yellow-300`} />
+                  <p></p>
+                  <div className="px-5 md:text-base text-sm md:my-3 my-2 pb-3 md:pb-0 md:mb-4 mb-0 text-center"> <b className="text-violet-400">SignUp / SignIn</b> to Puter.js Account for accessing {!isMobile && <br />} Image Generator Models and for allocating user allowance by puter.js . </div>
+                  <button onClick={async () => { await puter.auth.signIn(); setTriggedPuterSignInButton(false); setPuterLoginStatus(await puter.auth.isSignedIn()); }}
+                    className={` group hover:duration-830 transition pr-8 mx-1.5 md:my-3.5 my-1 md:mb-5 mb-3 p-3 text-white cursor-pointer font-bold hover:bg-linear-to-r  hover:from-violet-500 hover:to-pink-500 hover:text-white px-6 py-3 rounded-4xl flex justify-center items-center pl-8 mr-2 bg-violet-500  `}>
+                    <span>
+                      Puter Account
+                      <FaArrowRight className='inline-block ml-3 transition-all -tanslate-x-3 group-hover:translate-x-1.5 group-hover:scale-105 ' />
+                    </span>
+                  </button>
+                </motion.div>
+              </div>
+            }
+
+          </AnimatePresence>
+
+          , mountNode)
+      }
+
+
+
     </div >
   );
 

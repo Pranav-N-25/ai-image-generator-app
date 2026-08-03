@@ -162,7 +162,7 @@ const Collection = () => {
         collection && !collectionError && !loading ?
           <div className="w-full h-full px-2 ">
             <div
-              className="mb-10 grid md:grid-cols-3 gap-x-3 gap-y-3 grid-col-1 w-full h-full px-3 py-3 overflow-y-scroll scroll-smooth rounded-4xl bg-white shadow-2xl min-h-[89vh] my-6 md:my-3"
+              className="mb-10 grid md:grid-cols-3 gap-x-3 gap-y-3 grid-col-1 w-full h-full px-3 py-3 overflow-y-scroll scroll-smooth rounded-4xl noScroll bg-white shadow-2xl min-h-[89vh] my-6 md:my-3"
             >
               {collection.map((col, index) => {
                 return (

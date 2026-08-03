@@ -1023,7 +1023,7 @@ const About = () => {
                     onMouseLeave={() => {
                       hoverRef.current = false;
                     }}
-                    className="flex snap-x py-5 snap-mandatory overflow-x-auto scroll-smooth gap-6 pb-5 h-full mx-2 bg-linear-to-r "
+                    className="flex snap-x py-5 snap-mandatory overflow-x-auto scroll-smooth gap-6 pb-5 h-full mx-2 bg-linear-to-r noScroll "
                   >
                     {certificates.map((cert, index) => (
                       <motion.article

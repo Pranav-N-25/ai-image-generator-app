@@ -3,7 +3,7 @@
 
 @layer components {
   .navbar {
-    @apply relative z-40 ml-8 mx-1.5 text-gray-500/55 cursor-default font-bold duration-300  px-6 py-2.5 rounded-4xl
+    @apply relative z-40 ml-8 mx-1.5 text-gray-500/55 cursor-default font-bold duration-300 px-6 py-2.5 rounded-4xl
   }
 }
 
@@ -97,9 +97,18 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
-::-webkit-scrollbar {
+.noScroll::-webkit-scrollbar {
   display: none;
 }
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #fdc9bd rgb(255, 254, 254);
+  border-radius: 5px;
+  border: 2px solid transparent;
+  border-left: 0px solid transparent;
+}
+
 
 /* Match internal scrollbars to the red-yellow theme */
 .FIE_root ::-webkit-scrollbar-thumb {
@@ -118,15 +127,15 @@ body {
 }
 
 .FIE_save-button {
-  background-color: #FFCC00 !important; 
+  background-color: #FFCC00 !important;
   border: none !important;
 }
 
 
 
-.FIE_save-button svg, 
+.FIE_save-button svg,
 .FIE_save-button-label {
-  color: #ff0000 !important; 
+  color: #ff0000 !important;
   fill: #CC0000 !important;
 }
 
@@ -140,13 +149,15 @@ body {
 
 /* Target all action buttons in the editor */
 .filerobot-image-editor .FIE_button {
-  border-radius: 12px !important; /* medium rounded */
+  border-radius: 12px !important;
+  /* medium rounded */
 }
 
 /* If you want pill-shaped buttons */
 .filerobot-image-editor .FIE_button {
   border-radius: 9999px !important;
 }
+
 .ai-aurora {
 
   background: radial-gradient(circle at top left, #fbff00, #ff0000);

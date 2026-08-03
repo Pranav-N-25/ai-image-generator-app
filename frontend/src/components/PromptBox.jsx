@@ -18,6 +18,7 @@ import { useAppContext } from "../context/AppContext.jsx";
 import axios from "axios";
 import credit from "../assets/creditPoint.webp";
 import creditLock from "../assets/coinIcon.png";
+import { useMediaQuery } from "react-responsive";
 
 
 const PromptBox = ({
@@ -39,7 +40,8 @@ const PromptBox = ({
   setFilename,
   setTriggedSignInButton,
   PuterLoginStatus,
-  setTriggedPuterSignInButton
+  setTriggedPuterSignInButton,
+  tiggedPuterSignInButton
 }) => {
 
 
@@ -161,6 +163,8 @@ const PromptBox = ({
   const textareaRef = useRef(null);
   const colorRef = useRef(null);
   const menuRef = useRef(null);
+  const screenWidth = `w-[${document.documentElement.clientWidth}]`;
+  const isTab5 = useMediaQuery({ maxWidth: 1129 });
 
 
   const handleInput = () => {
@@ -176,7 +180,7 @@ const PromptBox = ({
 
 
 
-  useEffect(() => { if (PuterLoginStatus) { userDetails(); } }, [imageUrl, loading, input2, PuterLoginStatus]);
+  useEffect(() => { if (PuterLoginStatus) { userDetails(); } }, [imageUrl, loading, input2, PuterLoginStatus, tiggedPuterSignInButton]);
 
 
   const useClickOutside = (ref, callback) => {
@@ -240,8 +244,10 @@ const PromptBox = ({
         // await puter.auth.signIn({ attempt_temp_user_creation: true });
 
         // console.log((selected ? selected + "style , " : "") + Prompt + (on ? " with Image Color Scheme " + colour : "") + (imageResolution.w === "auto" ? "" : ", and encode the aspect ratio of image with " + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image"));
-        const imageElement = await puter.ai.txt2img(((selected ? selected + " style , " : "") + Prompt + (on ? " with Image Color Scheme " + colour : "") + (imageResolution.w === "auto" ? "" : ", and encode the aspect ratio of image with " + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image")), { model: selectedModel.value, input_image: input_image ? input_image.split(',')[1] : null , input_image_mime_type: fileType ? fileType : null });
+        
+        const imageElement = await puter.ai.txt2img(((selected ? selected + " style , " : "") + Prompt + (on ? " with Image Color Scheme " + colour : "") + (imageResolution.w === "auto" ? "" : ", and encode the aspect ratio of image with " + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image")), input_image ? { model: selectedModel.value, input_image: input_image ? input_image.split(',')[1] : null, input_image_mime_type: fileType ? fileType : null } : { model: selectedModel.value });
         setInput2((selected ? selected + "style , " : "") + Prompt + (on ? " with Image Color Scheme " + colour : "") + (imageResolution.w === "auto" ? "" : ", and encode the aspect ratio of image with " + imageResolution.w + "x" + imageResolution.h + " for resizing the generated image"));
+        console.log(imageElement);
         if (id) {
           const CloudinaryImageUrl = await uploadImage(imageElement);
         }
@@ -270,7 +276,7 @@ const PromptBox = ({
     setFileType(file.type);
     const reader = new FileReader();
     reader.onloadend = () => {
-      setInput_image(reader.result); 
+      setInput_image(reader.result);
     };
     reader.readAsDataURL(file);
 
@@ -325,9 +331,9 @@ const PromptBox = ({
           />
           <AnimatePresence >
             {input_image &&
-                <motion.div key={"Uploaded"} initial={{ scale: .8, opacity: 0.5, x: 30 }} viewport={{ once: true }} whileInView={{ opacity: 1, scale: 1, x: 0 }} exit={{ opacity: 0, scale: .8, x: -30 }} transition={{ duration: .1 }} className={` text-sm duration-400 flex justify-center items-center absolute bottom-4 right-3 px-4 h-10.5 border border-green-400 bg-green-200 rounded-4xl`}>
-                 <img src={input_image}/> {console.log(input_image)}<RiImageAiFill className={`text-green-500 w-5.5 h-5.5 mr-2 `} /> <p className="text-blue-500"><div className="flex justify-center items-center gap-2 text-green-500 select-none ">Uploaded <MdClose onClick={(e) => { e.stopPropagation(); setInput_image(null) }} className="bg-green-300 w-5.5 h-5.5 hover:text-green-50 hover:bg-green-500 duration-300 text-green-500 rounded-full p-1 cursor-pointer" /> </div> </p>
-                </motion.div>
+              <motion.div key={"Uploaded"} initial={{ scale: .8, opacity: 0.5, x: 30 }} viewport={{ once: true }} whileInView={{ opacity: 1, scale: 1, x: 0 }} exit={{ opacity: 0, scale: .8, x: -30 }} transition={{ duration: .1 }} className={` text-sm duration-400 flex justify-center items-center absolute bottom-4 right-3 px-4 h-10.5 border border-green-400 bg-green-200 rounded-4xl`}>
+                <img src={input_image} /> {/*console.log(input_image)*/}<RiImageAiFill className={`text-green-500 w-5.5 h-5.5 mr-2 `} /> <p className="text-blue-500"><div className="flex justify-center items-center gap-2 text-green-500 select-none ">Uploaded <MdClose onClick={(e) => { e.stopPropagation(); setInput_image(null) }} className="bg-green-300 w-5.5 h-5.5 hover:text-green-50 hover:bg-green-500 duration-300 text-green-500 rounded-full p-1 cursor-pointer" /> </div> </p>
+              </motion.div>
 
             }{!input_image &&
               <motion.label key={"Upload"} initial={{ scale: .4, opacity: 0.5 }} viewport={{ once: true }} whileInView={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: .4 }} transition={{ duration: .1 }} className={` text-sm duration-400 flex justify-center items-center absolute bottom-4 right-3 px-4 h-10.5 bg-zinc-300 rounded-4xl cursor-pointer`}>
@@ -339,8 +345,8 @@ const PromptBox = ({
         </div>
 
 
-        <div className={` `}>
-          <div className="flex flex-wrap justify-center items-center">
+        <div className={``}>
+          <div className="flex flex-wrap justify-center items-center pt-3 pb-3 ">
             {
               Image_Type.map((type, index) => {
                 return (
@@ -403,7 +409,7 @@ const PromptBox = ({
                 viewport={{ once: true }} // Ensures animation runs only once
                 exit={{ opacity: 0, scale: 0, y: -300 }}
                 transition={{ bounce: 0.25, visualDuration: 0.3, duration: 0.2 }}
-                className={` ${isTab4 ? "flex ml-2" : ""} 
+                className={` ${isTab4 ? "flex ml-2" : ""}  relative
                  select-none ml-3 h-11 bg-linear-to-r from-red-500 via-yellow-300 to-blue-500  border-transparent p-[1px] rounded-full cursor-pointer
                  `}>
                 <div
@@ -421,8 +427,8 @@ const PromptBox = ({
                 <AnimatePresence>
                   {openColorPicker &&
                     <motion.div
-                      initial={{ opacity: 0, y: isMobile ? -340 : -330, x: -22 }}
-                      animate={{ opacity: 1, y: isMobile ? -348 : -345 }}
+                      initial={{ opacity: 0, y: isMobile ? -340 : -330, x: isMobile ? -100 : 0 }}
+                      animate={{ opacity: 1, y: isMobile ? -348 : -345, x: isMobile ? -100 : 0 }}
                       exit={{ opacity: 0, y: -10 }}
                       viewport={{ once: true }} // Ensures animation runs only once
                       transition={{ type: "spring", bounce: 0.25, visualDuration: 0.1, duration: 0.15 }}
@@ -453,7 +459,7 @@ const PromptBox = ({
 
 
         <div
-          className={` w-full h-full select-none grow flex flex-row pr-4 justify-center items-center`}>
+          className={` w-full h-full select-none grow flex flex-row pr-4 ${isMobile ? "pt-5" : "pt-7 "} ${isTab5 ? "pb-7" : ""} justify-center items-center`}>
           {
             <motion.div
               initial={{ opacity: 0, scale: 0, x: 335 }}
@@ -508,45 +514,47 @@ const PromptBox = ({
             {showMenu &&
               <motion.ul
                 key="modelList"
-                initial={{ opacity: 0, y: -103, x: 135 }}
-                animate={{ opacity: 1, y: -123, x: 135 }}
+                initial={{ opacity: 0, y: isMobile ? -80 : -130, x: isMobile ? 165 : isTab5 ? 0 : 153 }}
+                animate={{ opacity: 1, y: isMobile ? -90 : -140, x: isMobile ? 165 : isTab5 ? 0 : 153 }}
                 exit={{ opacity: 1, y: -100, x: 155 }}
                 viewport={{ once: true }} // Ensures animation runs only once
                 transition={{ type: "easeInOut", visualDuration: 0.1, duration: 0.1 }}
-                className={` z-1  ${showMenu && "md:-translate-y-26 md:translate-x-1.5 -translate-x-43 -translate-y-40"} absolute text-sm -left-25 duration-500 transition-all -mx-15 mb-5 w-88 text-left bg-white border-black/15 border rounded-xl shadow-lg `}
+                className={` z-1  ${showMenu && "md:-translate-y-26 md:translate-x-1.5 -translate-x-43 -translate-y-40"} absolute text-sm -left-25 duration-500  transition-all -mx-15 mb-5 text-left ${screenWidth} bg-white pb-0.5 border-black/15 border rounded-xl shadow-lg `}
               >
                 <li key={"Names"} onClick={(e) => e.stopPropagation()} className=" flex justify-center items-center rounded-t-xl border-b-2 bg-red-500 font-extrabold text-white w-full">
                   <div className={`w-full flex justify-center items-center py-3`}>Models</div><div className={`flex w-[50%] justify-center items-center pl-10 px-1 py-3 bg-linear-to-r from-red-500/88 to-yellow-400 via-yellow-400   rounded-tr-xl`}>Credits</div>
                 </li>
-                {modelList.map((model, index) => (
-                  <li
-                    key={model.value}
-                    className={`px-2 py-2 cursor-pointer  hover:bg-gray-100 
+                <div className=" md:h-100 h-100 overflow-y-scroll scrollbar-thin md:w-88 w-80 pr-0.5 ">
+                  {modelList.map((model, index) => (
+                    <li
+                      key={model.value}
+                      className={`px-2 py-2 cursor-pointer  hover:bg-gray-100 
                       ${index === modelList.length - 1 ? "rounded-b-xl" : ""}
                       ${selectedModel.value === model.value
-                        ? "bg-red-300/25 hover:bg-red-300/25 text-red-500 "
-                        : "text-black/55"
-                      }`}
-                    onClick={() => {
-                      setSelectedModel(model);
-                      setShowMenu(false);
-                    }}
-                  >
-                    <span className=" flex justify-between ">
-                      <div className="flex gap-4">
-                        {model.icon}{model.label}
-                      </div>
+                          ? "bg-red-300/25 hover:bg-red-300/25 text-red-500 "
+                          : "text-black/55"
+                        }`}
+                      onClick={() => {
+                        setSelectedModel(model);
+                        setShowMenu(false);
+                      }}
+                    >
+                      <span className=" flex justify-between ">
+                        <div className="flex gap-4">
+                          {model.icon}{model.label}
+                        </div>
 
-                      <div
-                        className={`flex gap-2 py-[1px] font-extrabold w-[20%] /bg-red-600/55 rounded-4xl justify-center items-center ${id && PuterLoginStatus && (userCredits?.remaining / 1000000 >= model.credit) ? selectedModel.value === model.value ? "text-white  bg-linear-to-r from-yellow-400 via-yellow-400 to-red-500/88 " : "text-white bg-yellow-400/55 " : "text-gray-500 bg-gray-500/12"} `}>
-                        <img src={credit} className={`w-5 inline-block`} />
-                        <p>
-                          {model.credit.toFixed(1)}
-                        </p>
-                      </div>
-                    </span>
-                  </li>
-                ))}
+                        <div
+                          className={`flex gap-2 py-[1px] font-extrabold w-[20%] /bg-red-600/55 rounded-4xl justify-center items-center ${id && PuterLoginStatus && (userCredits?.remaining / 1000000 >= model.credit) ? selectedModel.value === model.value ? "text-white  bg-linear-to-r from-yellow-400 via-yellow-400 to-red-500/88 " : "text-white bg-yellow-400/55 " : "text-gray-500 bg-gray-500/12"} `}>
+                          <img src={credit} className={`w-5 inline-block`} />
+                          <p>
+                            {model.credit.toFixed(1)}
+                          </p>
+                        </div>
+                      </span>
+                    </li>
+                  ))}
+                </div>
               </motion.ul>
             }
           </motion.button>

@@ -12,7 +12,7 @@ const App = () => {
   const { drawerOpen, stopScrolling } = useAppContext();
 
   return (
-    <div className={` relative w-full  ${(drawerOpen || stopScrolling) ? "overflow-y-hidden" : ""} /h-screen bg-white/35 overflow-y-auto backdrop-blur-3xl `}>
+    <div className={` relative w-full  ${(drawerOpen || stopScrolling) ? "overflow-y-hidden" : ""} /h-screen  bg-white/35 overflow-y-auto backdrop-blur-3xl `}>
 
       <ScrollRestoration />
 

@@ -82,7 +82,7 @@ export default function ImageEditor({ source, setOpen, setIndex, setEditedImageU
             initial={{ opacity: 0.8, y: 15, transition: { duration: .5 } }}
             whileInView={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 15, transition: { duration: .5 } }}
-            className="fixed w-full h-screen p-8 ">
+            className="fixed w-full h-screen p-8">
 
             <FilerobotImageEditor
                 source={source}
